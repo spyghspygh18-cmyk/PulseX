@@ -1,0 +1,2672 @@
+<!DOCTYPE html>
+<html lang="es" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PulseX (pulsex.com) — Fotos, Reels y Comunidad</title>
+  <link id="pulsex-manifest-link" rel="manifest" />
+  <meta name="theme-color" content="#e1306c" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="PulseX" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            pulse: {
+              pink: '#f09433',
+              rose: '#e1306c',
+              purple: '#833ab4',
+              orange: '#fd1d1d',
+              blue: '#0095f6',
+              blueHover: '#1877f2',
+              red: '#ef4444',
+              darkBg: '#09090b',
+              darkCard: '#141418',
+              darkBorder: '#27272f',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Full color styling with zero grayscale or monochrome filters */
+    * {
+      box-sizing: border-box;
+      filter: none !important;
+      -webkit-filter: none !important;
+    }
+
+    html, body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      filter: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .pulse-gradient-text {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .pulse-story-ring {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      padding: 2.5px;
+      border-radius: 9999px;
+    }
+
+    .pulse-story-ring-creator {
+      background: linear-gradient(45deg, #ff1e42, #ff512f, #dd2476, #ff0844);
+      padding: 2.5px;
+      border-radius: 9999px;
+      box-shadow: 0 0 14px rgba(239, 68, 68, 0.55);
+    }
+
+    .creator-badge-glow {
+      filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.7)) !important;
+    }
+
+    .blue-badge-glow {
+      filter: drop-shadow(0 0 5px rgba(0, 149, 246, 0.55)) !important;
+    }
+
+    @keyframes heartPop {
+      0% { transform: scale(0.3); opacity: 0; }
+      45% { transform: scale(1.18); opacity: 1; }
+      75% { transform: scale(0.95); opacity: 1; }
+      100% { transform: scale(1.3); opacity: 0; }
+    }
+
+    .animate-heart-pop {
+      animation: heartPop 0.85s cubic-bezier(0.17, 0.89, 0.32, 1.49) forwards;
+    }
+
+    .reels-snap-container {
+      scroll-snap-type: y mandatory;
+      overflow-y: auto;
+      height: calc(100vh - 128px);
+    }
+
+    @media (min-width: 768px) {
+      .reels-snap-container {
+        height: calc(100vh - 48px);
+      }
+    }
+
+    .reel-slide {
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-rose-50 via-white to-sky-50 dark:from-pulse-darkBg dark:via-zinc-950 dark:to-slate-950 text-gray-900 dark:text-gray-100 antialiased selection:bg-pink-500 selection:text-white">
+
+  <!-- Toast Notification Banner -->
+  <div id="toast-container" class="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm w-full pointer-events-none px-3 sm:px-0"></div>
+
+  <!-- Sign-In Modal (Google & Apple) -->
+  <div id="auth-gate-modal" class="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/75 backdrop-blur-md p-4">
+    <div class="w-full max-w-md bg-white dark:bg-pulse-darkCard border border-pink-200/80 dark:border-pulse-darkBorder rounded-3xl shadow-2xl p-6 sm:p-8 relative overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-52 h-52 rounded-full bg-gradient-to-tr from-pink-500 via-red-500 to-amber-400 opacity-20 pointer-events-none"></div>
+      <div class="absolute -bottom-24 -left-24 w-52 h-52 rounded-full bg-gradient-to-tr from-sky-500 via-indigo-500 to-fuchsia-500 opacity-15 pointer-events-none"></div>
+
+      <div class="text-center mb-6 relative">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 text-white shadow-lg shadow-rose-500/30 mb-3">
+          <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+            <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" />
+          </svg>
+        </div>
+        <h1 class="text-3xl font-extrabold tracking-tight pulse-gradient-text">PulseX</h1>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/15 border border-rose-200/80 dark:border-rose-500/30 text-[11px] font-bold text-rose-600 dark:text-rose-300 mt-1">
+          <span>pulsex.com</span>
+          <span>·</span>
+          <span>Web &amp; App Oficial</span>
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1.5 font-medium">
+          Inicia sesión para crear tu cuenta y publicar Fotos y Reels en pulsex.com
+        </p>
+      </div>
+
+      <!-- Google & Apple Buttons -->
+      <div class="space-y-3 mb-5 relative">
+        <button id="btn-auth-google" type="button" onclick="openAccountChooser('google')" class="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-sky-50/70 dark:bg-zinc-900 dark:hover:bg-zinc-800 text-gray-900 dark:text-white border border-sky-200 dark:border-zinc-700 font-semibold text-sm flex items-center justify-center gap-3 shadow-sm transition active:scale-[0.99]">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z" />
+            <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.565 24 12.255 24z" />
+            <path fill="#FBBC05" d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z" />
+            <path fill="#EA4335" d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.69 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z" />
+          </svg>
+          <span>Iniciar sesión con Google</span>
+        </button>
+
+        <button id="btn-auth-apple" type="button" onclick="openAccountChooser('apple')" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-zinc-900 via-slate-900 to-zinc-800 hover:from-zinc-800 hover:to-slate-800 dark:from-white dark:to-rose-50 text-white dark:text-zinc-950 font-semibold text-sm flex items-center justify-center gap-3 shadow-md transition active:scale-[0.99]">
+          <svg class="w-5 h-5 shrink-0 fill-current" viewBox="0 0 24 24">
+            <path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z" />
+          </svg>
+          <span>Iniciar sesión con Apple</span>
+        </button>
+      </div>
+
+      <!-- Account Chooser & Custom Sign-In -->
+      <div id="account-chooser-panel" class="hidden border-t border-pink-100 dark:border-zinc-800 pt-4 mb-3 space-y-3 text-left relative">
+        <div class="flex items-center justify-between">
+          <span id="chooser-provider-label" class="text-xs font-bold text-gray-800 dark:text-gray-100">Elige una cuenta</span>
+          <button type="button" onclick="closeAccountChooser()" class="text-xs font-semibold text-rose-500 hover:text-rose-600">Cerrar</button>
+        </div>
+        <div id="chooser-accounts-list" class="space-y-2 max-h-40 overflow-y-auto"></div>
+        <div class="pt-2 border-t border-gray-100 dark:border-zinc-800 space-y-2">
+      <p class="text-[11px] text-center text-gray-500 dark:text-gray-400 leading-relaxed mt-3">
+        Cada cuenta creada aparece en PulseX para que el Creador administre las verificaciones.
+      </p>
+
+      <!-- Download App Button directly accessible on pulsex.com auth gate -->
+      <div class="mt-4 pt-3 border-t border-pink-100 dark:border-zinc-800 flex items-center justify-between gap-2">
+        <span class="text-[11px] font-semibold text-gray-600 dark:text-gray-300">¿Quieres instalarla en tu dispositivo?</span>
+        <button type="button" onclick="downloadPulseXApp()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:opacity-95 text-white text-xs font-extrabold shadow-md shadow-teal-500/25 flex items-center gap-1.5 transition shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
+          <span>Descargar App PulseX</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Shell -->
+  <div id="app-shell" class="min-h-screen flex flex-col md:flex-row">
+
+    <!-- Desktop Sidebar Navigation -->
+    <aside class="hidden md:flex md:w-64 lg:w-72 md:flex-col md:fixed md:inset-y-0 bg-white/95 dark:bg-pulse-darkCard/95 backdrop-blur-md border-r border-pink-100 dark:border-pulse-darkBorder px-4 py-6 justify-between z-30">
+      <div>
+        <div class="px-3 mb-7 flex items-center justify-between">
+          <button type="button" onclick="switchTab('home')" class="flex items-center gap-2.5 text-left group">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 flex items-center justify-center text-white shadow-md shadow-rose-500/25 group-hover:scale-105 transition">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+                <circle cx="12" cy="12" r="4" />
+                <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none" />
+              </svg>
+            </div>
+            <span class="text-2xl font-extrabold tracking-tight pulse-gradient-text">PulseX</span>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-500/15 text-rose-600 dark:text-rose-300 border border-rose-200/70 dark:border-rose-500/30">pulsex.com</span>
+          </button>
+
+          <button type="button" onclick="toggleDarkMode()" title="Cambiar tema" class="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-600 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-amber-300 transition">
+            <svg id="theme-icon-sun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            </svg>
+            <svg id="theme-icon-moon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+        </div>
+
+        <nav class="space-y-1.5">
+          <button type="button" data-nav="home" onclick="switchTab('home')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-pink-50 dark:hover:bg-zinc-800/70">
+            <svg class="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" /></svg>
+            <span>Inicio</span>
+          </button>
+
+          <button type="button" data-nav="explore" onclick="switchTab('explore')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-sky-50 dark:hover:bg-zinc-800/70">
+            <svg class="w-6 h-6 text-sky-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" /></svg>
+            <span>Explorar</span>
+          </button>
+
+          <button type="button" data-nav="reels" onclick="switchTab('reels')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-purple-50 dark:hover:bg-zinc-800/70">
+            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="4" /><path d="M10 8.5l6 3.5-6 3.5v-7z" /><path d="M2.5 8h19M7.5 2.5L10.5 8M14.5 2.5L17.5 8" /></svg>
+            <span>Reels</span>
+          </button>
+
+          <button type="button" data-nav="messages" onclick="switchTab('messages')" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-indigo-50 dark:hover:bg-zinc-800/70">
+            <span class="flex items-center gap-3.5">
+              <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
+              <span>Mensajes</span>
+            </span>
+            <span id="dm-unread-badge" class="hidden px-2 py-0.5 text-xs font-bold rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white">0</span>
+          </button>
+
+          <button type="button" data-nav="notifications" onclick="switchTab('notifications')" class="nav-btn w-full flex items-center justify-between px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-amber-50 dark:hover:bg-zinc-800/70">
+            <span class="flex items-center gap-3.5">
+              <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+              <span>Notificaciones</span>
+            </span>
+            <span id="notif-unread-dot" class="hidden w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          </button>
+
+          <button type="button" data-nav="create" onclick="openCreateModal('post')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-emerald-50 dark:hover:bg-zinc-800/70">
+            <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" /><path d="M12 8v8M8 12h8" /></svg>
+            <span>Crear</span>
+          </button>
+
+          <!-- Creator-only Verification Management Button -->
+          <button id="creator-panel-nav-btn" type="button" data-nav="verification" onclick="switchTab('verification')" class="hidden nav-btn w-full items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-bold text-red-600 dark:text-red-400 bg-gradient-to-r from-red-500/15 to-sky-500/15 hover:from-red-500/25 hover:to-sky-500/25 border border-red-400/40 transition">
+            <svg class="w-6 h-6 text-red-500 shrink-0 creator-badge-glow" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L14.8 4.4L18.5 4.1L19.6 7.6L22.6 9.8L21.5 13.3L22.6 16.8L19.6 19L18.5 22.5L14.8 22.2L12 24.6L9.2 22.2L5.5 22.5L4.4 19L1.4 16.8L2.5 13.3L1.4 9.8L4.4 7.6L5.5 4.1L9.2 4.4L12 2ZM10.4 16.6L17.4 9.6L16 8.2L10.4 13.8L7.8 11.2L6.4 12.6L10.4 16.6Z" /></svg>
+            <span>Panel Verificación</span>
+          </button>
+
+          <button type="button" data-nav="profile" onclick="switchTab('profile')" class="nav-btn w-full flex items-center gap-3.5 px-3.5 py-3 rounded-2xl text-sm font-semibold transition hover:bg-pink-50 dark:hover:bg-zinc-800/70">
+            <img id="sidebar-profile-avatar" src="https://placehold.co/64x64/ec4899/ffffff?text=PX" alt="Perfil" class="w-6 h-6 rounded-full object-cover ring-2 ring-pink-400" />
+            <span>Perfil</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Current User Mini Card -->
+      <div id="sidebar-user-card" class="p-3 rounded-2xl bg-gradient-to-br from-rose-50 via-white to-sky-50 dark:from-zinc-900 dark:to-zinc-900/80 border border-pink-100 dark:border-pulse-darkBorder">
+        <div class="flex items-center gap-3">
+          <img id="sidebar-card-avatar" src="https://placehold.co/80x80/8b5cf6/ffffff?text=PX" alt="Usuario" class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-purple-400" />
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1">
+              <span id="sidebar-card-name" class="text-sm font-bold truncate">Sin sesión</span>
+              <span id="sidebar-card-badge" class="shrink-0"></span>
+            </div>
+            <div id="sidebar-card-handle" class="text-xs text-gray-500 truncate">@invitado</div>
+          </div>
+        </div>
+        <div class="mt-2.5 flex items-center gap-1.5">
+          <button type="button" onclick="switchAccountFlow()" class="flex-1 py-1.5 px-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-600 hover:to-indigo-600 text-white transition">
+            Cambiar cuenta
+          </button>
+          <button type="button" onclick="signOutPulseX()" class="py-1.5 px-2.5 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-500/15 dark:hover:bg-rose-500/25 dark:text-rose-300 transition">
+            Salir
+          </button>
+        </div>
+        <button type="button" onclick="downloadPulseXApp()" class="mt-2 w-full py-2 px-3 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:opacity-95 text-white shadow-sm flex items-center justify-center gap-1.5 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
+          <span>Descargar App PulseX</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Top Header -->
+    <header class="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-white/95 dark:bg-pulse-darkCard/95 backdrop-blur-md border-b border-pink-100 dark:border-pulse-darkBorder">
+      <button type="button" onclick="switchTab('home')" class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 flex items-center justify-center text-white shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+            <rect x="2.5" y="2.5" width="19" height="19" rx="5" />
+            <circle cx="12" cy="12" r="4" />
+          </svg>
+        </div>
+        <div class="flex flex-col items-start leading-none">
+          <span class="text-xl font-extrabold tracking-tight pulse-gradient-text">PulseX</span>
+          <span class="text-[9px] font-bold text-rose-500">pulsex.com</span>
+        </div>
+      </button>
+
+      <div class="flex items-center gap-1.5">
+        <button id="mobile-creator-btn" type="button" onclick="switchTab('verification')" class="hidden px-2.5 py-1.5 rounded-xl bg-gradient-to-r from-red-500 to-rose-600 text-white text-xs font-bold items-center gap-1 shadow-sm">
+          <span>Verificar</span>
+        </button>
+        <button type="button" onclick="downloadPulseXApp()" class="p-2 rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300" title="Descargar App PulseX">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
+        </button>
+        <button type="button" onclick="openCreateModal('post')" class="p-2 rounded-xl bg-pink-50 text-pink-600 dark:bg-pink-500/15 dark:text-pink-300" title="Crear">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+        </button>
+        <button type="button" onclick="switchTab('messages')" class="relative p-2 rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-300" title="Mensajes">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
+          <span id="mobile-dm-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500"></span>
+        </button>
+        <button type="button" onclick="toggleDarkMode()" class="p-2 rounded-xl bg-amber-50 text-amber-600 dark:bg-zinc-800 dark:text-amber-300" title="Tema">
+          <svg class="w-5 h-5 hidden dark:block" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" /><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" /></svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Dynamic View Area -->
+    <main class="flex-1 md:ml-64 lg:ml-72 pb-20 md:pb-8">
+
+      <!-- 1. HOME FEED & STORIES -->
+      <section id="view-home" class="tab-view max-w-2xl mx-auto px-0 sm:px-4 pt-2 sm:pt-6">
+        <!-- Stories Strip -->
+        <div class="bg-white/95 dark:bg-pulse-darkCard/95 border-y sm:border border-pink-100 dark:border-pulse-darkBorder sm:rounded-2xl px-4 py-3.5 mb-5 shadow-sm">
+          <div id="stories-strip" class="flex items-center gap-4 overflow-x-auto no-scrollbar"></div>
+        </div>
+
+        <!-- Feed Posts Container -->
+        <div id="feed-posts-container" class="space-y-6 px-2 sm:px-0"></div>
+      </section>
+
+      <!-- 2. EXPLORE -->
+      <section id="view-explore" class="tab-view hidden max-w-5xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6">
+        <div class="mb-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-extrabold bg-gradient-to-r from-sky-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Explorar PulseX</h2>
+            <p class="text-xs text-gray-500 dark:text-gray-400">Descubre cuentas creadas, fotos y Reels de la comunidad</p>
+          </div>
+          <div class="relative w-full sm:w-80">
+            <input id="explore-search-input" type="text" oninput="renderExplore()" placeholder="Buscar usuario, @handle, foto o Reel..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white dark:bg-pulse-darkCard border border-sky-200 dark:border-pulse-darkBorder text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <svg class="w-4 h-4 text-sky-500 absolute left-3.5 top-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" /></svg>
+          </div>
+        </div>
+
+        <!-- Registered Users Strip -->
+        <div class="mb-6">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400 mb-3">Cuentas en PulseX</h3>
+          <div id="explore-users-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        </div>
+
+        <!-- Explore Media Grid -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-pink-600 dark:text-pink-400 mb-3">Fotos y Reels</h3>
+          <div id="explore-media-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4"></div>
+        </div>
+      </section>
+
+      <!-- 3. REELS VERTICAL PLAYER -->
+      <section id="view-reels" class="tab-view hidden max-w-xl mx-auto px-0 sm:px-4 pt-0 sm:pt-4">
+        <div class="flex items-center justify-between px-4 py-2.5 sm:px-0">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-pink-500 to-purple-600"></span>
+            <h2 class="text-lg font-extrabold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 bg-clip-text text-transparent">Reels</h2>
+          </div>
+          <button type="button" onclick="openCreateModal('reel')" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:opacity-95 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-pink-500/25 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            <span>Grabar Reel</span>
+          </button>
+        </div>
+        <div id="reels-feed-container" class="reels-snap-container rounded-none sm:rounded-3xl bg-zinc-950 border border-purple-500/30 shadow-xl"></div>
+      </section>
+
+      <!-- 4. DIRECT MESSAGES -->
+      <section id="view-messages" class="tab-view hidden max-w-5xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6">
+        <div class="bg-white/95 dark:bg-pulse-darkCard/95 border border-indigo-100 dark:border-pulse-darkBorder rounded-3xl overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[540px] shadow-sm">
+          <!-- Conversations List -->
+          <div class="md:col-span-4 border-b md:border-b-0 md:border-r border-indigo-100 dark:border-pulse-darkBorder flex flex-col">
+            <div class="p-4 border-b border-indigo-100 dark:border-pulse-darkBorder flex items-center justify-between bg-gradient-to-r from-indigo-50/70 to-pink-50/70 dark:from-zinc-900 dark:to-zinc-900">
+              <div>
+                <h2 class="font-bold text-base text-indigo-950 dark:text-white">Mensajes Directos</h2>
+                <p id="dm-current-user-label" class="text-xs text-indigo-600 dark:text-indigo-300 truncate"></p>
+              </div>
+            </div>
+            <div id="dm-conversations-list" class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-zinc-800/70"></div>
+          </div>
+
+          <!-- Active Chat Thread -->
+          <div class="md:col-span-8 flex flex-col justify-between bg-gradient-to-b from-indigo-50/20 via-white to-pink-50/20 dark:from-zinc-950/40 dark:to-zinc-950/40">
+            <div id="dm-thread-header" class="p-4 border-b border-indigo-100 dark:border-pulse-darkBorder flex items-center gap-3 min-h-[68px] bg-white/80 dark:bg-pulse-darkCard/80">
+              <span class="text-sm text-gray-400">Selecciona una cuenta para chatear</span>
+            </div>
+
+            <div id="dm-messages-list" class="flex-1 p-4 space-y-3 overflow-y-auto max-h-[380px]"></div>
+
+            <form id="dm-send-form" onsubmit="sendDirectMessage(event)" class="p-3 border-t border-indigo-100 dark:border-pulse-darkBorder flex items-center gap-2 bg-white/90 dark:bg-pulse-darkCard/90">
+              <input id="dm-message-input" type="text" placeholder="Escribe un mensaje..." class="flex-1 px-4 py-2.5 rounded-full bg-indigo-50/60 dark:bg-zinc-900 border border-indigo-200/70 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+              <button type="submit" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-95 text-white text-sm font-bold shadow-sm transition">
+                Enviar
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. NOTIFICATIONS -->
+      <section id="view-notifications" class="tab-view hidden max-w-2xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6">
+        <div class="bg-white/95 dark:bg-pulse-darkCard/95 border border-amber-100 dark:border-pulse-darkBorder rounded-3xl p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-extrabold bg-gradient-to-r from-amber-500 via-rose-500 to-pink-500 bg-clip-text text-transparent">Notificaciones</h2>
+            <button type="button" onclick="markAllNotificationsRead()" class="text-xs font-bold text-rose-500 hover:underline">Marcar como leídas</button>
+          </div>
+          <div id="notifications-list" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <!-- 6. USER PROFILE -->
+      <section id="view-profile" class="tab-view hidden max-w-4xl mx-auto px-3 sm:px-6 pt-4 sm:pt-6">
+        <div id="profile-header-card" class="bg-white/95 dark:bg-pulse-darkCard/95 border border-pink-100 dark:border-pulse-darkBorder rounded-3xl p-5 sm:p-7 mb-6 shadow-sm"></div>
+
+        <div class="flex items-center justify-center gap-8 border-b border-pink-100 dark:border-pulse-darkBorder mb-5">
+          <button type="button" id="profile-tab-posts" onclick="switchProfileMediaTab('posts')" class="pb-3 text-xs font-extrabold uppercase tracking-wider border-b-2 border-rose-500 text-rose-600 dark:text-rose-400">
+            Fotos
+          </button>
+          <button type="button" id="profile-tab-reels" onclick="switchProfileMediaTab('reels')" class="pb-3 text-xs font-extrabold uppercase tracking-wider border-b-2 border-transparent text-gray-500 hover:text-purple-600">
+            Reels
+          </button>
+          <button type="button" id="profile-tab-saved" onclick="switchProfileMediaTab('saved')" class="pb-3 text-xs font-extrabold uppercase tracking-wider border-b-2 border-transparent text-gray-500 hover:text-sky-600">
+            Guardados
+          </button>
+        </div>
+
+        <div id="profile-media-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4"></div>
+      </section>
+
+      <!-- pulsex.com Official Web & App Download Footer Banner -->
+      <footer class="max-w-5xl mx-auto px-3 sm:px-6 mt-8 mb-4">
+        <div class="rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white p-5 sm:p-6 shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="text-center sm:text-left">
+            <div class="text-xs font-extrabold uppercase tracking-wider text-amber-200">pulsex.com · Web &amp; Aplicación</div>
+            <h3 class="text-lg font-extrabold">Descarga e instala la App de PulseX</h3>
+            <p class="text-xs text-white/90 mt-0.5">Obtén el instalador directo de la app PulseX o añádela a tu pantalla de inicio desde pulsex.com.</p>
+          </div>
+          <div class="flex flex-wrap items-center justify-center gap-2.5 shrink-0">
+            <button type="button" onclick="downloadPulseXApp()" class="px-4 py-2.5 rounded-2xl bg-white text-indigo-700 hover:bg-amber-50 text-xs font-extrabold shadow-md flex items-center gap-2 transition">
+              <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
+              <span>Descargar App PulseX</span>
+            </button>
+            <button type="button" onclick="openAppInstallGuide()" class="px-4 py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 text-white text-xs font-bold transition">
+              Cómo instalar
+            </button>
+          </div>
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 dark:bg-pulse-darkCard/95 backdrop-blur-md border-t border-pink-100 dark:border-pulse-darkBorder flex items-center justify-around py-2 px-1">
+    <button type="button" data-nav="home" onclick="switchTab('home')" class="mob-nav-btn p-2.5 rounded-xl text-rose-500">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9.5z" /></svg>
+    </button>
+    <button type="button" data-nav="explore" onclick="switchTab('explore')" class="mob-nav-btn p-2.5 rounded-xl text-sky-500">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4.35-4.35" /></svg>
+    </button>
+    <button type="button" data-nav="reels" onclick="switchTab('reels')" class="mob-nav-btn p-2.5 rounded-xl text-purple-500">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2.5" y="2.5" width="19" height="19" rx="4" /><path d="M10 8.5l6 3.5-6 3.5v-7z" /></svg>
+    </button>
+    <button type="button" data-nav="notifications" onclick="switchTab('notifications')" class="mob-nav-btn relative p-2.5 rounded-xl text-amber-500">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+      <span id="mob-notif-dot" class="hidden absolute top-2 right-2 w-2 h-2 rounded-full bg-rose-500"></span>
+    </button>
+    <button type="button" data-nav="profile" onclick="switchTab('profile')" class="mob-nav-btn p-2.5 rounded-xl">
+      <img id="mobile-nav-avatar" src="https://placehold.co/48x48/ec4899/ffffff?text=PX" alt="Perfil" class="w-6 h-6 rounded-full object-cover ring-2 ring-pink-400" />
+    </button>
+  </nav>
+
+  <!-- Create Post / Reel / Story Modal with Camera & Microphone Permissions -->
+  <div id="create-modal" class="fixed inset-0 z-[80] hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto">
+    <div class="w-full max-w-xl bg-white dark:bg-pulse-darkCard border border-pink-100 dark:border-pulse-darkBorder rounded-3xl shadow-2xl overflow-hidden my-auto">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-pink-100 dark:border-pulse-darkBorder bg-gradient-to-r from-rose-50/70 via-white to-purple-50/70 dark:from-zinc-900 dark:to-zinc-900">
+        <div class="flex items-center gap-2">
+          <button type="button" id="mode-btn-post" onclick="setCreateMode('post')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm">Foto / Publicación</button>
+          <button type="button" id="mode-btn-reel" onclick="setCreateMode('reel')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-100 text-purple-700 dark:bg-purple-500/20 dark:text-purple-200">Grabar Reel</button>
+          <button type="button" id="mode-btn-story" onclick="setCreateMode('story')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-200">Historia</button>
+        </div>
+        <button type="button" onclick="closeCreateModal()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 text-gray-500">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <form id="create-content-form" onsubmit="submitNewContent(event)" class="p-5 space-y-4">
+        <!-- Camera & Microphone Permission Banner -->
+        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-sky-50 via-purple-50 to-pink-50 dark:from-zinc-900 dark:to-zinc-900 border border-sky-200/80 dark:border-zinc-700 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div id="permission-status-title" class="text-xs font-bold text-gray-900 dark:text-white">Permisos de Cámara y Micrófono</div>
+            <div id="permission-status-desc" class="text-[11px] text-gray-600 dark:text-gray-300">Activa tu cámara (y micrófono para Reels) para grabar o tomar fotos en vivo.</div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" id="btn-request-media-perm" onclick="requestCameraMicrophonePermission()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:opacity-95 text-white text-xs font-bold shadow-sm transition">
+              Dar permiso
+            </button>
+            <button type="button" id="btn-stop-camera" onclick="stopCameraStream()" class="hidden px-3 py-2 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 dark:bg-rose-500/20 dark:text-rose-200 text-xs font-bold transition">
+              Apagar cámara
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Camera & Capture Stage -->
+        <div id="camera-stage" class="hidden rounded-2xl overflow-hidden bg-zinc-950 border border-purple-500/30 relative">
+          <video id="live-camera-preview" autoplay playsinline muted class="w-full max-h-72 object-cover"></video>
+          <canvas id="photo-capture-canvas" class="hidden"></canvas>
+
+          <div class="p-3 bg-zinc-900/95 flex flex-wrap items-center justify-between gap-2">
+            <div id="recording-indicator" class="hidden items-center gap-2 text-xs font-bold text-red-400">
+              <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+              <span id="recording-timer-text">Grabando Reel... 0s</span>
+            </div>
+
+            <div class="flex items-center gap-2 ml-auto">
+              <button type="button" id="btn-take-photo" onclick="capturePhotoFromCamera()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-white text-xs font-bold shadow-sm">
+                Tomar Foto
+              </button>
+              <button type="button" id="btn-start-record-reel" onclick="startRecordingReel()" class="px-3.5 py-2 rounded-xl bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-95 text-white text-xs font-bold shadow-sm">
+                Grabar Reel
+              </button>
+              <button type="button" id="btn-stop-record-reel" onclick="stopRecordingReel()" class="hidden px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm">
+                Detener Grabación
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- File Upload Fallback -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <label class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-pink-50 hover:bg-pink-100 text-pink-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-pink-200 text-xs font-bold cursor-pointer transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+            <span id="upload-file-label">Subir foto o video desde archivo</span>
+            <input id="media-file-input" type="file" accept="image/*,video/*" onchange="handleFileSelected(event)" class="hidden" />
+          </label>
+          <span id="selected-media-badge" class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400"></span>
+        </div>
+
+        <!-- Captured / Uploaded Media Preview -->
+        <div id="media-preview-box" class="hidden rounded-2xl overflow-hidden bg-zinc-950 border border-pink-200/40 dark:border-zinc-700 max-h-64 flex items-center justify-center relative">
+          <img id="preview-image" src="" alt="Vista previa" class="hidden max-h-64 w-full object-contain" />
+          <video id="preview-video" src="" controls playsinline class="hidden max-h-64 w-full object-contain"></video>
+        </div>
+
+        <!-- Caption & Location -->
+        <div class="space-y-3">
+          <textarea id="content-caption-input" rows="2" placeholder="Escribe una descripción para tu foto o Reel..." class="w-full px-4 py-2.5 rounded-2xl bg-rose-50/40 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"></textarea>
+          <input id="content-location-input" type="text" placeholder="Ubicación (opcional)" class="w-full px-4 py-2 rounded-xl bg-sky-50/40 dark:bg-zinc-900 border border-sky-200/70 dark:border-zinc-700 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" onclick="closeCreateModal()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-gray-100 hover:bg-gray-200 text-gray-700 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-gray-200">
+            Cancelar
+          </button>
+          <button id="submit-content-btn" type="submit" class="px-6 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:opacity-95 text-white shadow-md shadow-pink-500/25">
+            Publicar en PulseX
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Story Viewer Modal -->
+  <div id="story-viewer-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-zinc-950/90 backdrop-blur-md p-4">
+    <div class="w-full max-w-md bg-zinc-900 rounded-3xl overflow-hidden border border-pink-500/30 shadow-2xl relative">
+      <div class="px-3 pt-3 flex items-center gap-1.5" id="story-progress-bars"></div>
+      <div class="p-3 bg-gradient-to-b from-black/70 to-transparent flex items-center justify-between">
+        <div id="story-viewer-author" class="flex items-center gap-2.5 text-white"></div>
+        <button type="button" onclick="closeStoryViewer()" class="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div id="story-viewer-media" class="min-h-[380px] max-h-[70vh] flex items-center justify-center bg-black"></div>
+      <div id="story-viewer-caption" class="p-4 text-sm text-white bg-zinc-900 text-center"></div>
+    </div>
+  </div>
+
+  <!-- App Download & Installation Guide Modal -->
+  <div id="app-install-modal" class="fixed inset-0 z-[88] hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+    <div class="w-full max-w-md bg-white dark:bg-pulse-darkCard border border-emerald-200 dark:border-zinc-700 rounded-3xl shadow-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">pulsex.com</span>
+          <h3 class="text-lg font-extrabold">Instalar App PulseX</h3>
+        </div>
+        <button type="button" onclick="closeAppInstallGuide()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <p class="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+        Descarga el archivo instalador de la aplicación <strong>PulseX</strong> o agrégala como app en tu teléfono o computadora desde <strong>pulsex.com</strong>:
+      </p>
+      <ul class="text-xs space-y-2 text-gray-700 dark:text-gray-200 bg-emerald-50/70 dark:bg-zinc-900 p-3.5 rounded-2xl border border-emerald-200/60 dark:border-zinc-800">
+        <li><strong>1. Descarga directa:</strong> Pulsa <em>Descargar App PulseX</em> para bajar <code>PulseX-App-Installer.html</code>.</li>
+        <li><strong>2. Android / Chrome / Edge:</strong> Abre el menú del navegador y elige <em>Instalar aplicación</em> o <em>Agregar a pantalla principal</em>.</li>
+        <li><strong>3. iPhone / Safari:</strong> Pulsa <em>Compartir</em> y selecciona <em>Agregar a inicio</em>.</li>
+      </ul>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button type="button" onclick="closeAppInstallGuide()" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-zinc-800">Cerrar</button>
+        <button type="button" onclick="downloadPulseXApp()" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 text-white shadow-md">
+          Descargar App PulseX
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Comments Modal -->
+  <div id="comments-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+    <div class="w-full max-w-lg bg-white dark:bg-pulse-darkCard border border-pink-100 dark:border-pulse-darkBorder rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[82vh]">
+      <div class="px-5 py-4 border-b border-pink-100 dark:border-pulse-darkBorder flex items-center justify-between">
+        <h3 class="font-bold text-base">Comentarios</h3>
+        <button type="button" onclick="closeCommentsModal()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <div id="comments-modal-list" class="flex-1 p-4 space-y-3 overflow-y-auto"></div>
+      <form onsubmit="submitComment(event)" class="p-3 border-t border-pink-100 dark:border-pulse-darkBorder flex items-center gap-2">
+        <input id="comment-input" type="text" placeholder="Añade un comentario..." class="flex-1 px-4 py-2 rounded-full bg-rose-50/50 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500" />
+        <button type="submit" class="px-4 py-2 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white text-xs font-bold">Publicar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Profile Modal -->
+  <div id="edit-profile-modal" class="fixed inset-0 z-[85] hidden items-center justify-center bg-slate-950/75 backdrop-blur-sm p-4">
+    <div class="w-full max-w-md bg-white dark:bg-pulse-darkCard border border-pink-100 dark:border-pulse-darkBorder rounded-3xl shadow-2xl p-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-lg">Editar Perfil</h3>
+        <button type="button" onclick="closeEditProfileModal()" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form onsubmit="saveProfileChanges(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Nombre</label>
+          <input id="edit-profile-name" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-rose-50/40 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Usuario (@handle)</label>
+          <input id="edit-profile-handle" type="text" required class="w-full px-4 py-2.5 rounded-xl bg-rose-50/40 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-gray-500 mb-1">Biografía</label>
+          <textarea id="edit-profile-bio" rows="3" class="w-full px-4 py-2.5 rounded-xl bg-rose-50/40 dark:bg-zinc-900 border border-pink-200/70 dark:border-zinc-700 text-sm"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeEditProfileModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-100 dark:bg-zinc-800">Cancelar</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-white shadow-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import {
+      getAuth,
+      GoogleAuthProvider,
+      OAuthProvider,
+      signInWithPopup,
+      signOut,
+      onAuthStateChanged,
+      signInWithCustomToken
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      onSnapshot,
+      serverTimestamp,
+      arrayUnion,
+      arrayRemove
+    } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    // Internal owner identifier without exposing in UI text
+    const OWNER_ACCOUNT_KEY = ['spyghspygh18', 'gmail.com'].join('@');
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'pulsex-clean-app';
+
+    let selectedAuthProvider = 'google';
+    let currentSession = null;
+    let allUsers = [];
+    let allPosts = [];
+    let allReels = [];
+    let allStories = [];
+    let allMessages = [];
+    let allNotifications = [];
+
+    let activeTab = 'home';
+    let activeProfileMediaTab = 'posts';
+    let activeDmPartnerUid = null;
+    let activeCommentTarget = null;
+    let createMode = 'post';
+    let preparedMediaDataUrl = '';
+    let preparedMediaType = 'image';
+    let storyProgressTimer = null;
+
+    // Attach dynamic PWA manifest for pulsex.com
+    (function attachPulseXManifest() {
+      try {
+        const manifestObj = {
+          name: 'PulseX — pulsex.com',
+          short_name: 'PulseX',
+          start_url: '.',
+          display: 'standalone',
+          background_color: '#fff1f2',
+          theme_color: '#e1306c',
+          description: 'Red social oficial de Fotos, Reels y comunidad en pulsex.com',
+          icons: [
+            {
+              src: 'https://placehold.co/192x192/e1306c/ffffff?text=PX',
+              sizes: '192x192',
+              type: 'image/png'
+            },
+            {
+              src: 'https://placehold.co/512x512/833ab4/ffffff?text=PX',
+              sizes: '512x512',
+              type: 'image/png'
+            }
+          ]
+        };
+        const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+        const linkEl = document.getElementById('pulsex-manifest-link');
+        if (linkEl) linkEl.href = URL.createObjectURL(blob);
+      } catch (_) {}
+    })();
+
+    // Downloadable PulseX App Package / Installer
+    window.downloadPulseXApp = function () {
+      try {
+        const currentHtml = document.documentElement.outerHTML;
+        const payload = JSON.stringify(currentHtml);
+        const installerContent = [
+          '<!DOCTYPE html>',
+          '<html lang="es">',
+          '<head>',
+          '<meta charset="UTF-8" />',
+          '<meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+          '<title>Instalador Oficial — App PulseX (pulsex.com)</title>',
+          '<style>',
+          'body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(135deg,#fff1f2,#fdf2f8,#eff6ff);color:#111827;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:16px}',
+          '.card{max-width:440px;width:100%;background:#ffffff;border-radius:28px;padding:28px;box-shadow:0 20px 50px rgba(225,48,108,0.18);text-align:center;border:1px solid #fbcfe8}',
+          '.badge{display:inline-block;padding:4px 12px;border-radius:999px;background:linear-gradient(90deg,#e1306c,#833ab4);color:#fff;font-size:12px;font-weight:800;margin-bottom:12px}',
+          'h1{margin:0 0 8px;font-size:28px;font-weight:900;color:#be185d}',
+          'p{font-size:14px;color:#4b5563;line-height:1.5;margin:0 0 20px}',
+          '.btn{display:inline-block;width:100%;padding:14px 18px;border:0;border-radius:16px;background:linear-gradient(90deg,#e1306c,#f43f5e,#833ab4);color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 10px 24px rgba(225,48,108,0.3)}',
+          '.btn:hover{opacity:0.95}',
+          '</style>',
+          '</head>',
+          '<body>',
+          '<div class="card">',
+          '<div class="badge">pulsex.com · App Oficial</div>',
+          '<h1>PulseX App</h1>',
+          '<p>Listo para abrir y usar la aplicación <strong>PulseX</strong> directamente en tu dispositivo.</p>',
+          '<button id="launchBtn" class="btn" type="button">Abrir Aplicación PulseX</button>',
+          '</div>',
+          '<script>',
+          'const pulsexBundle = ' + payload + ';',
+          'function launchPulseX(){ document.open(); document.write(pulsexBundle); document.close(); }',
+          'document.getElementById("launchBtn").addEventListener("click", launchPulseX);',
+          '<\/script>',
+          '</body>',
+          '</html>'
+        ].join('\n');
+
+        const blob = new Blob([installerContent], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href = url;
+        anchor.download = 'PulseX-App-Installer.html';
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1500);
+        showToast('Descargando PulseX-App-Installer.html desde pulsex.com...', 'success');
+      } catch (err) {
+        console.warn('Download error:', err);
+        showToast('No se pudo generar la descarga de la app.', 'error');
+      }
+    };
+
+    window.openAppInstallGuide = function () {
+      const modal = document.getElementById('app-install-modal');
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+    };
+
+    window.closeAppInstallGuide = function () {
+      const modal = document.getElementById('app-install-modal');
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+    };
+        }
+      } catch (err) {
+        console.warn('Local storage read warning:', err);
+      }
+      return {
+        users: [],
+        posts: [],
+        reels: [],
+        stories: [],
+        messages: [],
+        notifications: [],
+        sessionUid: null
+      };
+    }
+
+    function saveLocalState() {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({
+          ...localState,
+          sessionUid: currentSession?.uid || null
+        }));
+      } catch (err) {
+        console.warn('Local storage write warning:', err);
+      }
+    }
+
+    // Initialize Firebase if available
+    let db = null;
+    let auth = null;
+    let firebaseReady = false;
+
+    try {
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        const fbConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+        if (fbConfig && fbConfig.apiKey) {
+          const fbApp = initializeApp(fbConfig);
+          auth = getAuth(fbApp);
+          db = getFirestore(fbApp);
+          firebaseReady = true;
+        }
+      }
+    } catch (err) {
+      console.warn('Running in local mode:', err);
+      firebaseReady = false;
+    }
+
+    // Toast helper with vibrant colors
+    window.showToast = function (message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const colorMap = {
+        creator: 'bg-gradient-to-r from-red-600 via-rose-600 to-sky-600 text-white border border-white/25',
+        success: 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white',
+        error: 'bg-gradient-to-r from-rose-600 to-red-700 text-white',
+        info: 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white'
+      };
+      toast.className = `px-4 py-3 rounded-2xl text-xs font-bold shadow-xl pointer-events-auto transition-all duration-300 ${colorMap[type] || colorMap.info}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-8px)';
+        setTimeout(() => toast.remove(), 280);
+      }, 3200);
+    };
+
+    // Dark / Light Mode toggle
+    window.toggleDarkMode = function () {
+      const htmlEl = document.documentElement;
+      const isDark = htmlEl.classList.toggle('dark');
+      htmlEl.classList.toggle('light', !isDark);
+      try {
+        localStorage.setItem('pulsex_theme', isDark ? 'dark' : 'light');
+      } catch (_) {}
+    };
+
+    (function initTheme() {
+      try {
+        const savedTheme = localStorage.getItem('pulsex_theme');
+        if (savedTheme === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
+      } catch (_) {}
+    })();
+
+    // Owner & Verification Badge Renderer
+    function isOwnerEmail(email) {
+      return Boolean(email && email.trim().toLowerCase() === OWNER_ACCOUNT_KEY);
+    }
+
+    function isMasterCreator() {
+      return Boolean(currentSession && (isOwnerEmail(currentSession.email) || currentSession.isCreator === true));
+    }
+
+    window.renderBadge = function (user, sizeClass = 'w-4 h-4') {
+      if (!user) return '';
+      const isCreator = isOwnerEmail(user.email) || user.isCreator === true;
+      const isBlueVerified = isCreator || user.verified === true;
+
+      const redBadgeSvg = `
+        <svg class="${sizeClass} text-red-500 shrink-0 creator-badge-glow" fill="currentColor" viewBox="0 0 24 24" title="Insignia Roja del Creador">
+          <path d="M12 2L14.8 4.4L18.5 4.1L19.6 7.6L22.6 9.8L21.5 13.3L22.6 16.8L19.6 19L18.5 22.5L14.8 22.2L12 24.6L9.2 22.2L5.5 22.5L4.4 19L1.4 16.8L2.5 13.3L1.4 9.8L4.4 7.6L5.5 4.1L9.2 4.4L12 2ZM10.4 16.6L17.4 9.6L16 8.2L10.4 13.8L7.8 11.2L6.4 12.6L10.4 16.6Z" />
+        </svg>
+      `;
+
+      const blueBadgeSvg = `
+        <svg class="${sizeClass} text-sky-500 shrink-0 blue-badge-glow" fill="currentColor" viewBox="0 0 24 24" title="Verificado">
+          <path d="M12 2L14.8 4.4L18.5 4.1L19.6 7.6L22.6 9.8L21.5 13.3L22.6 16.8L19.6 19L18.5 22.5L14.8 22.2L12 24.6L9.2 22.2L5.5 22.5L4.4 19L1.4 16.8L2.5 13.3L1.4 9.8L4.4 7.6L5.5 4.1L9.2 4.4L12 2ZM10.4 16.6L17.4 9.6L16 8.2L10.4 13.8L7.8 11.2L6.4 12.6L10.4 16.6Z" />
+        </svg>
+      `;
+
+      if (isCreator) {
+        return `
+          <span class="inline-flex items-center gap-1 align-middle">
+            ${redBadgeSvg}
+            ${blueBadgeSvg}
+            <span class="px-1.5 py-0.5 rounded-full text-[10px] font-extrabold bg-gradient-to-r from-red-500 to-sky-500 text-white leading-none shadow-sm">
+              Creador · Rojo + Azul
+            </span>
+          </span>
+        `;
+      }
+
+      if (isBlueVerified) {
+        return `<span class="inline-flex items-center align-middle">${blueBadgeSvg}</span>`;
+      }
+
+      return '';
+    }
+
+    function getUserByUid(uid) {
+      if (!uid) return null;
+      if (currentSession && currentSession.uid === uid) return currentSession;
+      return allUsers.find(u => u.uid === uid) || null;
+    }
+
+    // Sign-in Modal & Account Chooser
+    window.openAccountChooser = function (providerName) {
+      selectedAuthProvider = providerName;
+      const panel = document.getElementById('account-chooser-panel');
+      const label = document.getElementById('chooser-provider-label');
+      const list = document.getElementById('chooser-accounts-list');
+      panel.classList.remove('hidden');
+      label.textContent = providerName === 'apple' ? 'Cuentas de Apple en PulseX' : 'Cuentas de Google en PulseX';
+
+      const accounts = allUsers.filter(u => u.uid);
+      if (!accounts.length) {
+        list.innerHTML = `<div class="text-xs text-gray-500 dark:text-gray-400 py-2">Aún no hay cuentas creadas. Ingresa tu nombre y correo abajo para crear la primera.</div>`;
+      } else {
+        list.innerHTML = accounts.map(acc => `
+          <button type="button" onclick="selectSavedAccount('${acc.uid}')" class="w-full p-2.5 rounded-xl bg-rose-50/50 hover:bg-rose-100/70 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-pink-200/60 dark:border-zinc-700 flex items-center gap-3 text-left transition">
+            <img src="${acc.photoURL}" class="w-9 h-9 rounded-full object-cover shrink-0 ring-2 ring-pink-400" alt="${escapeHtml(acc.displayName)}" />
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-bold truncate flex items-center gap-1">
+                <span>${escapeHtml(acc.displayName)}</span>
+                ${renderBadge(acc, 'w-3.5 h-3.5')}
+              </div>
+              <div class="text-[11px] text-gray-500 truncate">@${escapeHtml(acc.handle)}</div>
+            </div>
+          </button>
+        `).join('');
+      }
+    };
+
+    window.closeAccountChooser = function () {
+      document.getElementById('account-chooser-panel')?.classList.add('hidden');
+    };
+
+    window.selectSavedAccount = async function (uid) {
+      const acc = allUsers.find(u => u.uid === uid);
+      if (!acc) return;
+      await registerAndActivateAccount({
+        uid: acc.uid,
+        email: acc.email || '',
+        displayName: acc.displayName,
+        provider: selectedAuthProvider || acc.provider || 'google',
+        photoURL: acc.photoURL || ''
+      });
+    };
+
+    window.confirmCustomProviderSignIn = async function () {
+      const customName = document.getElementById('auth-name-input')?.value.trim() || '';
+      const customEmail = document.getElementById('auth-email-input')?.value.trim() || '';
+      if (!customEmail) {
+        showToast('Ingresa un correo electrónico para continuar.', 'error');
+        return;
+      }
+      await signInWithProvider(selectedAuthProvider, { customName, customEmail });
+    };
+
+    function showAuthModal() {
+      const modal = document.getElementById('auth-gate-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function hideAuthModal() {
+      closeAccountChooser();
+      const modal = document.getElementById('auth-gate-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function registerAndActivateAccount({ uid, email, displayName, provider, photoURL }) {
+      const cleanEmail = (email || '').trim().toLowerCase();
+      const creatorDetected = isOwnerEmail(cleanEmail);
+      const existing = allUsers.find(u => u.uid === uid || (cleanEmail && u.email && u.email.toLowerCase() === cleanEmail));
+
+      const finalUid = existing ? existing.uid : uid;
+      const finalName = displayName?.trim()
+        || existing?.displayName
+        || (creatorDetected ? 'Creador PulseX' : (cleanEmail ? cleanEmail.split('@')[0] : `Usuario ${provider.toUpperCase()}`));
+
+      const baseHandle = (existing?.handle || (cleanEmail ? cleanEmail.split('@')[0] : `${provider}_${finalUid.slice(-5)}`))
+        .toLowerCase()
+        .replace(/[^a-z0-9._]/g, '') || 'usuario_pulsex';
+
+      const finalPhoto = photoURL
+        || existing?.photoURL
+        || (creatorDetected
+          ? 'https://placehold.co/150x150/ef4444/ffffff?text=PX'
+          : `https://placehold.co/150x150/ec4899/ffffff?text=${encodeURIComponent(finalName.slice(0, 2).toUpperCase())}`);
+
+      const verifiedStatus = creatorDetected ? true : Boolean(existing?.verified);
+
+      const profileData = {
+        uid: finalUid,
+        email: cleanEmail || existing?.email || '',
+        displayName: finalName,
+        handle: baseHandle,
+        provider: provider || existing?.provider || 'google',
+        photoURL: finalPhoto,
+        bio: existing?.bio || (creatorDetected ? 'Creador de PulseX · Verificación Roja + Azul' : 'Nuevo en PulseX'),
+        isCreator: creatorDetected,
+        verified: verifiedStatus,
+        followers: Array.isArray(existing?.followers) ? existing.followers : [],
+        following: Array.isArray(existing?.following) ? existing.following : [],
+        savedPosts: Array.isArray(existing?.savedPosts) ? existing.savedPosts : [],
+        updatedAt: Date.now()
+      };
+
+      currentSession = profileData;
+
+      // Upsert into users list
+      const idx = allUsers.findIndex(u => u.uid === finalUid);
+      if (idx >= 0) {
+        allUsers[idx] = { ...allUsers[idx], ...profileData };
+      } else {
+        allUsers.push(profileData);
+      }
+      localState.users = allUsers;
+      localState.sessionUid = finalUid;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', finalUid), {
+            ...profileData,
+            lastSeen: serverTimestamp()
+          }, { merge: true });
+        } catch (err) {
+          console.warn('Firestore user sync warning:', err);
+        }
+      }
+
+      hideAuthModal();
+      syncCreatorUI();
+      renderAll();
+
+      if (creatorDetected) {
+        showToast('Insignia Roja + Azul del Creador activada en PulseX', 'creator');
+      } else {
+        showToast(`¡Bienvenido a PulseX, ${profileData.displayName}!`, 'success');
+      }
+    }
+
+    window.signInWithProvider = async function (providerName, overrides = {}) {
+      const customName = (overrides.customName ?? document.getElementById('auth-name-input')?.value ?? '').trim();
+      const customEmail = (overrides.customEmail ?? document.getElementById('auth-email-input')?.value ?? '').trim();
+
+      if (firebaseReady && auth && !customEmail) {
+        try {
+          if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token && !currentSession) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          }
+          const authProvider = providerName === 'apple'
+            ? new OAuthProvider('apple.com')
+            : new GoogleAuthProvider();
+          if (providerName === 'google') {
+            authProvider.setCustomParameters({ prompt: 'select_account' });
+          }
+          const result = await signInWithPopup(auth, authProvider);
+          const u = result.user;
+          await registerAndActivateAccount({
+            uid: u.uid,
+            email: u.email || '',
+            displayName: customName || u.displayName || '',
+            provider: providerName,
+            photoURL: u.photoURL || ''
+          });
+          return;
+        } catch (err) {
+          console.warn('Popup sign-in fallback:', err);
+        }
+      }
+
+      const fallbackEmail = customEmail || (providerName === 'google'
+        ? `google.${Date.now().toString().slice(-4)}@correo.com`
+        : `apple.${Date.now().toString().slice(-4)}@correo.com`);
+      const normalizedEmail = fallbackEmail.trim().toLowerCase();
+      const uid = isOwnerEmail(normalizedEmail)
+        ? 'pulsex_owner_account'
+        : `user_${providerName}_${btoa(unescape(encodeURIComponent(normalizedEmail))).replace(/[^a-zA-Z0-9]/g, '').slice(0, 12)}`;
+
+      await registerAndActivateAccount({
+        uid,
+        email: normalizedEmail,
+        displayName: customName || (isOwnerEmail(normalizedEmail) ? 'Creador PulseX' : normalizedEmail.split('@')[0]),
+        provider: providerName,
+        photoURL: ''
+      });
+    };
+
+    window.switchAccountFlow = function () {
+      stopCameraStream();
+      showAuthModal();
+      openAccountChooser(selectedAuthProvider || 'google');
+    };
+
+    window.signOutPulseX = async function () {
+      stopCameraStream();
+      if (firebaseReady && auth) {
+        try {
+          await signOut(auth);
+        } catch (_) {}
+      }
+      currentSession = null;
+      localState.sessionUid = null;
+      saveLocalState();
+      syncCreatorUI();
+      renderAll();
+      showAuthModal();
+      showToast('Sesión cerrada.', 'info');
+    };
+
+    function syncCreatorUI() {
+      const creatorMode = isMasterCreator();
+      const desktopBtn = document.getElementById('creator-panel-nav-btn');
+      const mobileBtn = document.getElementById('mobile-creator-btn');
+
+      if (creatorMode) {
+        desktopBtn.classList.remove('hidden');
+        desktopBtn.classList.add('flex');
+        mobileBtn.classList.remove('hidden');
+        mobileBtn.classList.add('inline-flex');
+      } else {
+        desktopBtn.classList.add('hidden');
+        desktopBtn.classList.remove('flex');
+        mobileBtn.classList.add('hidden');
+        mobileBtn.classList.remove('inline-flex');
+        if (activeTab === 'verification') {
+          switchTab('home');
+        }
+      }
+
+      const avatarUrl = currentSession?.photoURL || 'https://placehold.co/80x80/ec4899/ffffff?text=PX';
+      document.getElementById('sidebar-profile-avatar').src = avatarUrl;
+      document.getElementById('sidebar-card-avatar').src = avatarUrl;
+      document.getElementById('mobile-nav-avatar').src = avatarUrl;
+
+      document.getElementById('sidebar-card-name').textContent = currentSession ? currentSession.displayName : 'Sin sesión';
+      document.getElementById('sidebar-card-handle').textContent = currentSession ? `@${currentSession.handle}` : '@invitado';
+      document.getElementById('sidebar-card-badge').innerHTML = currentSession ? renderBadge(currentSession, 'w-4 h-4') : '';
+      document.getElementById('dm-current-user-label').textContent = currentSession ? `@${currentSession.handle}` : '';
+    }
+
+    // Navigation Tabs
+    window.switchTab = function (tabName) {
+      if (tabName === 'verification' && !isMasterCreator()) {
+        showToast('Solo la cuenta Creadora puede administrar verificaciones.', 'error');
+        return;
+      }
+
+      activeTab = tabName;
+      document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+      const targetView = document.getElementById(`view-${tabName}`);
+      if (targetView) targetView.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.nav === tabName) {
+          btn.classList.add('bg-gradient-to-r', 'from-pink-500/15', 'to-purple-500/15', 'text-rose-600', 'dark:text-pink-300', 'font-bold');
+        } else {
+          btn.classList.remove('bg-gradient-to-r', 'from-pink-500/15', 'to-purple-500/15', 'text-rose-600', 'dark:text-pink-300', 'font-bold');
+        }
+      });
+
+      if (tabName === 'home') renderHome();
+      if (tabName === 'explore') renderExplore();
+      if (tabName === 'reels') renderReels();
+      if (tabName === 'messages') renderMessages();
+      if (tabName === 'notifications') renderNotifications();
+      if (tabName === 'profile') renderProfile();
+      if (tabName === 'verification') renderVerificationPanel();
+    };
+
+    // Creator Verification Management
+    window.toggleUserVerification = async function (targetUid, verified) {
+      if (!isMasterCreator()) {
+        showToast('Solo la cuenta Creadora puede dar o quitar verificaciones.', 'error');
+        return;
+      }
+      const targetUser = allUsers.find(u => u.uid === targetUid);
+      if (!targetUser) return;
+      if (isOwnerEmail(targetUser.email) || targetUser.isCreator) {
+        showToast('La cuenta Creadora siempre conserva las insignias Roja + Azul.', 'info');
+        return;
+      }
+
+      targetUser.verified = Boolean(verified);
+      localState.users = allUsers;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid), {
+            verified: Boolean(verified)
+          });
+        } catch (err) {
+          console.warn('Firestore verification update error:', err);
+        }
+      }
+
+      await createNotification({
+        toUid: targetUid,
+        type: 'verification',
+        text: verified
+          ? 'El Creador de PulseX te otorgó la insignia de verificado.'
+          : 'El Creador de PulseX retiró tu insignia de verificado.'
+      });
+
+      renderAll();
+      showToast(verified ? `Verificación azul otorgada a @${targetUser.handle}` : `Verificación retirada a @${targetUser.handle}`, 'success');
+    };
+
+    function renderVerificationPanel() {
+      const container = document.getElementById('verification-users-list');
+      if (!isMasterCreator()) {
+        container.innerHTML = `<div class="py-10 text-center text-sm text-gray-500">Acceso restringido al Creador.</div>`;
+        return;
+      }
+
+      const query = (document.getElementById('verification-search-input')?.value || '').trim().toLowerCase();
+      const filtered = allUsers.filter(u =>
+        !query ||
+        (u.displayName || '').toLowerCase().includes(query) ||
+        (u.handle || '').toLowerCase().includes(query)
+      );
+
+      if (!filtered.length) {
+        container.innerHTML = `<div class="py-10 text-center text-sm text-gray-500">Aún no hay cuentas creadas en PulseX.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(user => {
+        const isCreatorRow = isOwnerEmail(user.email) || user.isCreator === true;
+        const isVerified = isCreatorRow || Boolean(user.verified);
+
+        return `
+          <div class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <img src="${user.photoURL}" alt="${escapeHtml(user.displayName)}" class="w-11 h-11 rounded-full object-cover shrink-0 ring-2 ring-pink-400" />
+              <div class="min-w-0">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="font-bold text-sm truncate">${escapeHtml(user.displayName)}</span>
+                  ${renderBadge(user, 'w-4 h-4')}
+                </div>
+                <div class="text-xs text-gray-500 truncate">@${escapeHtml(user.handle)} · ${escapeHtml((user.provider || 'google').toUpperCase())}</div>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              ${isCreatorRow
+                ? `<span class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-gradient-to-r from-red-500/15 to-sky-500/15 text-red-600 dark:text-red-300 border border-red-400/30">Creador · Rojo + Azul</span>`
+                : isVerified
+                  ? `<button type="button" onclick="toggleUserVerification('${user.uid}', false)" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-600 dark:bg-rose-500/20 dark:hover:bg-rose-500/30 dark:text-rose-200 transition">Quitar Verificado</button>`
+                  : `<button type="button" onclick="toggleUserVerification('${user.uid}', true)" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-95 text-white shadow-sm transition">Dar Verificado</button>`
+              }
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Camera & Microphone Permissions + Recording for Photos and Reels
+    window.openCreateModal = function (mode = 'post') {
+      if (!currentSession) {
+        showAuthModal();
+        showToast('Inicia sesión primero para crear contenido.', 'info');
+        return;
+      }
+      setCreateMode(mode);
+      const modal = document.getElementById('create-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    window.closeCreateModal = function () {
+      stopRecordingReel(true);
+      stopCameraStream();
+      resetCreateForm();
+      const modal = document.getElementById('create-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    window.setCreateMode = function (mode) {
+      createMode = mode;
+      const postBtn = document.getElementById('mode-btn-post');
+      const reelBtn = document.getElementById('mode-btn-reel');
+      const storyBtn = document.getElementById('mode-btn-story');
+      const submitBtn = document.getElementById('submit-content-btn');
+
+      postBtn.className = mode === 'post'
+        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm'
+        : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-500/15 dark:text-rose-200';
+
+      reelBtn.className = mode === 'reel'
+        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-sm'
+        : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-purple-50 text-purple-700 dark:bg-purple-500/15 dark:text-purple-200';
+
+      storyBtn.className = mode === 'story'
+        ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm'
+        : 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-amber-50 text-amber-700 dark:bg-amber-500/15 dark:text-amber-200';
+
+      submitBtn.textContent = mode === 'reel'
+        ? 'Publicar Reel'
+        : mode === 'story'
+          ? 'Publicar Historia'
+          : 'Publicar Foto';
+
+      updatePermissionCopy();
+    };
+
+    function updatePermissionCopy() {
+      const titleEl = document.getElementById('permission-status-title');
+      const descEl = document.getElementById('permission-status-desc');
+      if (createMode === 'reel') {
+        titleEl.textContent = 'Permisos de Cámara y Micrófono para Reels';
+        descEl.textContent = 'Se solicitará acceso a tu cámara y micrófono para grabar tu Reel.';
+      } else {
+        titleEl.textContent = 'Permiso de Cámara para Fotos';
+        descEl.textContent = 'Se solicitará acceso a tu cámara para tomar una foto al instante.';
+      }
+    }
+
+    window.requestCameraMicrophonePermission = async function () {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast('Tu navegador no soporta cámara en vivo. Puedes subir un archivo.', 'error');
+        return;
+      }
+
+      const wantsAudio = createMode === 'reel';
+      try {
+        stopCameraStream();
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 1080 }, height: { ideal: 1920 } },
+          audio: wantsAudio
+        });
+        cameraStream = stream;
+
+        const videoEl = document.getElementById('live-camera-preview');
+        videoEl.srcObject = stream;
+        document.getElementById('camera-stage').classList.remove('hidden');
+        document.getElementById('btn-stop-camera').classList.remove('hidden');
+
+        document.getElementById('permission-status-title').textContent = wantsAudio
+          ? 'Cámara y Micrófono activos'
+          : 'Cámara activa';
+        document.getElementById('permission-status-desc').textContent = 'Permiso concedido. Ya puedes tomar fotos o grabar tu Reel.';
+        showToast(wantsAudio ? 'Permiso de cámara y micrófono concedido.' : 'Permiso de cámara concedido.', 'success');
+      } catch (err) {
+        console.warn('Media permission error:', err);
+        showToast('Permiso denegado o no disponible. Verifica los permisos del navegador o sube un archivo.', 'error');
+      }
+    };
+
+    window.stopCameraStream = function () {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+      }
+      const videoEl = document.getElementById('live-camera-preview');
+      if (videoEl) videoEl.srcObject = null;
+      document.getElementById('camera-stage')?.classList.add('hidden');
+      document.getElementById('btn-stop-camera')?.classList.add('hidden');
+      updatePermissionCopy();
+    };
+
+    window.capturePhotoFromCamera = function () {
+      const videoEl = document.getElementById('live-camera-preview');
+      const canvas = document.getElementById('photo-capture-canvas');
+      if (!cameraStream || !videoEl.videoWidth) {
+        showToast('Primero activa el permiso de cámara.', 'error');
+        return;
+      }
+      canvas.width = videoEl.videoWidth;
+      canvas.height = videoEl.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+      setPreparedMedia(dataUrl, 'image', 'Foto tomada con cámara');
+      showToast('Foto capturada correctamente.', 'success');
+    };
+
+    window.startRecordingReel = function () {
+      if (!cameraStream) {
+        showToast('Primero otorga permiso de cámara y micrófono.', 'error');
+        return;
+      }
+      if (typeof MediaRecorder === 'undefined') {
+        showToast('Grabación de video no soportada en este navegador. Sube un archivo de video.', 'error');
+        return;
+      }
+
+      try {
+        recordedChunks = [];
+        const options = MediaRecorder.isTypeSupported('video/webm;codecs=vp9,opus')
+          ? { mimeType: 'video/webm;codecs=vp9,opus' }
+          : (MediaRecorder.isTypeSupported('video/webm') ? { mimeType: 'video/webm' } : undefined);
+
+        mediaRecorder = options ? new MediaRecorder(cameraStream, options) : new MediaRecorder(cameraStream);
+
+        mediaRecorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            recordedChunks.push(event.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/webm' });
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+              setPreparedMedia(reader.result, 'video', `Reel grabado (${recordingSeconds}s)`);
+              showToast('Reel grabado listo para publicar.', 'success');
+            }
+          };
+          reader.readAsDataURL(blob);
+        };
+
+        mediaRecorder.start();
+        recordingSeconds = 0;
+        document.getElementById('btn-start-record-reel').classList.add('hidden');
+        document.getElementById('btn-stop-record-reel').classList.remove('hidden');
+        const ind = document.getElementById('recording-indicator');
+        ind.classList.remove('hidden');
+        ind.classList.add('flex');
+        document.getElementById('recording-timer-text').textContent = 'Grabando Reel... 0s';
+
+        recordingInterval = setInterval(() => {
+          recordingSeconds += 1;
+          document.getElementById('recording-timer-text').textContent = `Grabando Reel... ${recordingSeconds}s`;
+        }, 1000);
+      } catch (err) {
+        console.warn('Recording error:', err);
+        showToast('No se pudo iniciar la grabación del Reel.', 'error');
+      }
+    };
+
+    window.stopRecordingReel = function (silent = false) {
+      if (recordingInterval) {
+        clearInterval(recordingInterval);
+        recordingInterval = null;
+      }
+      document.getElementById('btn-start-record-reel')?.classList.remove('hidden');
+      document.getElementById('btn-stop-record-reel')?.classList.add('hidden');
+      const ind = document.getElementById('recording-indicator');
+      ind?.classList.add('hidden');
+      ind?.classList.remove('flex');
+
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        try {
+          mediaRecorder.stop();
+        } catch (_) {}
+      }
+      if (!silent) {
+        showToast('Grabación detenida.', 'info');
+      }
+    };
+
+    window.handleFileSelected = function (event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      const isVid = file.type.startsWith('video/');
+      const reader = new FileReader();
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          setPreparedMedia(reader.result, isVid ? 'video' : 'image', file.name);
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+
+    function setPreparedMedia(dataUrl, type, labelText) {
+      preparedMediaDataUrl = dataUrl;
+      preparedMediaType = type;
+
+      const box = document.getElementById('media-preview-box');
+      const img = document.getElementById('preview-image');
+      const vid = document.getElementById('preview-video');
+      const badge = document.getElementById('selected-media-badge');
+
+      box.classList.remove('hidden');
+      badge.textContent = labelText;
+
+      if (type === 'video') {
+        img.classList.add('hidden');
+        img.src = '';
+        vid.classList.remove('hidden');
+        vid.src = dataUrl;
+      } else {
+        vid.classList.add('hidden');
+        vid.src = '';
+        img.classList.remove('hidden');
+        img.src = dataUrl;
+      }
+    }
+
+    function resetCreateForm() {
+      preparedMediaDataUrl = '';
+      preparedMediaType = 'image';
+      recordedChunks = [];
+      recordingSeconds = 0;
+      document.getElementById('media-file-input').value = '';
+      document.getElementById('content-caption-input').value = '';
+      document.getElementById('content-location-input').value = '';
+      document.getElementById('selected-media-badge').textContent = '';
+      document.getElementById('media-preview-box').classList.add('hidden');
+      document.getElementById('preview-image').src = '';
+      document.getElementById('preview-video').src = '';
+    }
+
+    window.submitNewContent = async function (event) {
+      event.preventDefault();
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+
+      const caption = document.getElementById('content-caption-input').value.trim();
+      const location = document.getElementById('content-location-input').value.trim();
+
+      if (!preparedMediaDataUrl) {
+        showToast('Captura una foto, graba un Reel o sube un archivo antes de publicar.', 'error');
+        return;
+      }
+
+      const id = `item_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+      const now = Date.now();
+
+      if (createMode === 'story') {
+        const storyObj = {
+          id,
+          authorUid: currentSession.uid,
+          mediaUrl: preparedMediaDataUrl,
+          mediaType: preparedMediaType,
+          caption,
+          createdAt: now
+        };
+        allStories.unshift(storyObj);
+        localState.stories = allStories;
+        saveLocalState();
+
+        if (firebaseReady && db) {
+          try {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'stories', id), storyObj);
+          } catch (err) {
+            console.warn('Firestore story error:', err);
+          }
+        }
+        closeCreateModal();
+        renderHome();
+        showToast('Historia publicada en PulseX.', 'success');
+        return;
+      }
+
+      if (createMode === 'reel' || preparedMediaType === 'video') {
+        const reelObj = {
+          id,
+          authorUid: currentSession.uid,
+          videoUrl: preparedMediaDataUrl,
+          caption,
+          location,
+          likes: [],
+          comments: [],
+          createdAt: now
+        };
+        allReels.unshift(reelObj);
+        localState.reels = allReels;
+        saveLocalState();
+
+        if (firebaseReady && db) {
+          try {
+            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'reels', id), reelObj);
+          } catch (err) {
+            console.warn('Firestore reel error:', err);
+          }
+        }
+        closeCreateModal();
+        switchTab('reels');
+        showToast('¡Reel publicado!', 'success');
+        return;
+      }
+
+      const postObj = {
+        id,
+        authorUid: currentSession.uid,
+        mediaUrl: preparedMediaDataUrl,
+        mediaType: 'image',
+        caption,
+        location,
+        likes: [],
+        comments: [],
+        createdAt: now
+      };
+      allPosts.unshift(postObj);
+      localState.posts = allPosts;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', id), postObj);
+        } catch (err) {
+          console.warn('Firestore post error:', err);
+        }
+      }
+      closeCreateModal();
+      switchTab('home');
+      showToast('¡Foto publicada en PulseX!', 'success');
+    };
+
+    // Rendering: Stories, Feed, Reels, Explore, Messages, Notifications, Profile
+    function renderAll() {
+      syncCreatorUI();
+      renderHome();
+      renderExplore();
+      renderReels();
+      renderMessages();
+      renderNotifications();
+      renderProfile();
+      if (isMasterCreator()) renderVerificationPanel();
+    }
+
+    function renderHome() {
+      renderStoriesStrip();
+      renderFeedPosts();
+    }
+
+    function renderStoriesStrip() {
+      const strip = document.getElementById('stories-strip');
+      const addStoryCard = `
+        <button type="button" onclick="openCreateModal('story')" class="flex flex-col items-center gap-1.5 shrink-0 group">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 p-0.5 flex items-center justify-center shadow-sm group-hover:scale-105 transition">
+            <div class="w-full h-full rounded-full bg-white dark:bg-pulse-darkCard flex items-center justify-center text-rose-500">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></svg>
+            </div>
+          </div>
+          <span class="text-[11px] font-semibold text-gray-700 dark:text-gray-200">Tu historia</span>
+        </button>
+      `;
+
+      if (!allStories.length) {
+        strip.innerHTML = addStoryCard + `<div class="text-xs text-gray-500 dark:text-gray-400 pl-2">Aún no hay historias publicadas.</div>`;
+        return;
+      }
+
+      const storyItems = allStories.map(story => {
+        const author = getUserByUid(story.authorUid) || { displayName: 'Usuario', handle: 'usuario', photoURL: 'https://placehold.co/80x80/ec4899/ffffff?text=PX' };
+        const ringClass = isOwnerEmail(author.email) || author.isCreator ? 'pulse-story-ring-creator' : 'pulse-story-ring';
+        return `
+          <button type="button" onclick="openStoryViewer('${story.id}')" class="flex flex-col items-center gap-1.5 shrink-0 group">
+            <div class="${ringClass} group-hover:scale-105 transition">
+              <img src="${author.photoURL}" alt="${escapeHtml(author.displayName)}" class="w-14 h-14 rounded-full object-cover border-2 border-white dark:border-pulse-darkCard" />
+            </div>
+            <span class="text-[11px] font-medium max-w-[72px] truncate">${escapeHtml(author.displayName)}</span>
+          </button>
+        `;
+      }).join('');
+
+      strip.innerHTML = addStoryCard + storyItems;
+    }
+
+    window.openStoryViewer = function (storyId) {
+      const story = allStories.find(s => s.id === storyId);
+      if (!story) return;
+      const author = getUserByUid(story.authorUid) || { displayName: 'Usuario', handle: 'usuario', photoURL: 'https://placehold.co/80x80/ec4899/ffffff?text=PX' };
+
+      if (storyProgressTimer) {
+        clearTimeout(storyProgressTimer);
+        storyProgressTimer = null;
+      }
+
+      const barsEl = document.getElementById('story-progress-bars');
+      if (barsEl) {
+        barsEl.innerHTML = allStories.map(s => {
+          const active = s.id === story.id;
+          return `
+            <div class="h-1 flex-1 rounded-full bg-white/25 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-amber-400 via-pink-500 to-rose-500 transition-all duration-1000 ${active ? 'w-full' : 'w-0'}"></div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      document.getElementById('story-viewer-author').innerHTML = `
+        <img src="${author.photoURL}" class="w-9 h-9 rounded-full object-cover" alt="" />
+        <div>
+          <div class="text-xs font-bold flex items-center gap-1">${escapeHtml(author.displayName)} ${renderBadge(author, 'w-3.5 h-3.5')}</div>
+          <div class="text-[11px] text-white/75">@${escapeHtml(author.handle)}</div>
+        </div>
+      `;
+
+      const mediaBox = document.getElementById('story-viewer-media');
+      if (story.mediaType === 'video') {
+        mediaBox.innerHTML = `<video src="${story.mediaUrl}" autoplay controls playsinline class="max-h-[65vh] w-full object-contain"></video>`;
+      } else {
+        mediaBox.innerHTML = `<img src="${story.mediaUrl}" alt="" class="max-h-[65vh] w-full object-contain" />`;
+      }
+
+      document.getElementById('story-viewer-caption').textContent = story.caption || '';
+
+      const modal = document.getElementById('story-viewer-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      const currentIdx = allStories.findIndex(s => s.id === story.id);
+      storyProgressTimer = setTimeout(() => {
+        if (currentIdx >= 0 && currentIdx + 1 < allStories.length) {
+          openStoryViewer(allStories[currentIdx + 1].id);
+        } else {
+          closeStoryViewer();
+        }
+      }, 6000);
+    };
+
+    window.closeStoryViewer = function () {
+      if (storyProgressTimer) {
+        clearTimeout(storyProgressTimer);
+        storyProgressTimer = null;
+      }
+      const modal = document.getElementById('story-viewer-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.getElementById('story-viewer-media').innerHTML = '';
+    };
+
+    function renderFeedPosts() {
+      const container = document.getElementById('feed-posts-container');
+      if (!allPosts.length) {
+        container.innerHTML = `
+          <div class="bg-white/95 dark:bg-pulse-darkCard/95 border border-pink-100 dark:border-pulse-darkBorder rounded-3xl p-10 text-center shadow-sm">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-400 via-rose-500 to-purple-600 text-white mx-auto mb-3 flex items-center justify-center shadow-md shadow-rose-500/25">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4" /><circle cx="12" cy="12" r="3.5" /></svg>
+            </div>
+            <h3 class="font-bold text-base mb-1">El feed de PulseX está vacío</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">Toma una foto con tu cámara o sube una imagen para ser el primero en publicar.</p>
+            <button type="button" onclick="openCreateModal('post')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 text-white text-xs font-bold shadow-md shadow-pink-500/25">
+              Crear primera foto
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allPosts.map(post => {
+        const author = getUserByUid(post.authorUid) || { displayName: 'Usuario', handle: 'usuario', photoURL: 'https://placehold.co/80x80/ec4899/ffffff?text=PX' };
+        const likesArr = Array.isArray(post.likes) ? post.likes : [];
+        const commentsArr = Array.isArray(post.comments) ? post.comments : [];
+        const isLiked = currentSession ? likesArr.includes(currentSession.uid) : false;
+        const isSaved = currentSession ? (currentSession.savedPosts || []).includes(post.id) : false;
+        const canDelete = currentSession && (currentSession.uid === post.authorUid || isMasterCreator());
+
+        return `
+          <article class="bg-white/95 dark:bg-pulse-darkCard/95 border border-pink-100 dark:border-pulse-darkBorder rounded-3xl overflow-hidden shadow-sm">
+            <div class="px-4 py-3 flex items-center justify-between">
+              <div class="flex items-center gap-3 min-w-0">
+                <img src="${author.photoURL}" alt="${escapeHtml(author.displayName)}" class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-pink-400" />
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1 flex-wrap">
+                    <span class="font-bold text-sm truncate">${escapeHtml(author.displayName)}</span>
+                    ${renderBadge(author, 'w-4 h-4')}
+                  </div>
+                  <div class="text-[11px] text-gray-500 truncate">@${escapeHtml(author.handle)}${post.location ? ` · ${escapeHtml(post.location)}` : ''}</div>
+                </div>
+              </div>
+
+              ${canDelete ? `
+                <button type="button" onclick="deletePostItem('${post.id}')" class="p-2 rounded-xl text-gray-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition" title="Eliminar">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+              ` : ''}
+            </div>
+
+            <div class="relative bg-zinc-950 select-none" ondblclick="handleDoubleTapLike('${post.id}', 'post', this)">
+              <img src="${post.mediaUrl}" alt="${escapeHtml(post.caption || 'Foto en PulseX')}" class="w-full max-h-[540px] object-contain mx-auto" />
+              <div class="double-tap-heart pointer-events-none absolute inset-0 flex items-center justify-center opacity-0">
+                <svg class="w-24 h-24 text-rose-500 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+              </div>
+            </div>
+
+            <div class="p-4">
+              <div class="flex items-center justify-between mb-2.5">
+                <div class="flex items-center gap-3">
+                  <button type="button" onclick="toggleLikeItem('${post.id}', 'post')" class="flex items-center gap-1.5 text-sm font-bold transition ${isLiked ? 'text-rose-500' : 'text-gray-700 dark:text-gray-200 hover:text-rose-500'}">
+                    <svg class="w-6 h-6" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+                    <span>${likesArr.length}</span>
+                  </button>
+
+                  <button type="button" onclick="openCommentsModal('${post.id}', 'post')" class="flex items-center gap-1.5 text-sm font-bold text-gray-700 dark:text-gray-200 hover:text-sky-500 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
+                    <span>${commentsArr.length}</span>
+                  </button>
+
+                  <button type="button" onclick="startDirectChat('${post.authorUid}')" class="p-1 text-gray-700 dark:text-gray-200 hover:text-indigo-500 transition" title="Enviar mensaje">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
+                  </button>
+                </div>
+
+                <button type="button" onclick="toggleSavePost('${post.id}')" class="p-1 transition ${isSaved ? 'text-amber-500' : 'text-gray-600 dark:text-gray-300 hover:text-amber-500'}" title="Guardar">
+                  <svg class="w-6 h-6" fill="${isSaved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" /></svg>
+                </button>
+              </div>
+
+              ${post.caption ? `
+                <p class="text-sm leading-relaxed">
+                  <span class="font-bold mr-1.5">${escapeHtml(author.handle)}</span>
+                  <span>${escapeHtml(post.caption)}</span>
+                </p>
+              ` : ''}
+
+              ${commentsArr.length > 0 ? `
+                <button type="button" onclick="openCommentsModal('${post.id}', 'post')" class="mt-2 text-xs text-gray-500 hover:underline">
+                  Ver los ${commentsArr.length} comentarios
+                </button>
+              ` : ''}
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    window.handleDoubleTapLike = async function (itemId, kind, wrapperEl) {
+      const heart = wrapperEl?.querySelector('.double-tap-heart');
+      if (heart) {
+        heart.classList.remove('animate-heart-pop');
+        void heart.offsetWidth;
+        heart.classList.add('animate-heart-pop');
+      }
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      const list = kind === 'reel' ? allReels : allPosts;
+      const item = list.find(x => x.id === itemId);
+      if (item && !(item.likes || []).includes(currentSession.uid)) {
+        await toggleLikeItem(itemId, kind);
+      }
+    };
+
+    window.toggleLikeItem = async function (itemId, kind) {
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      const isReel = kind === 'reel';
+      const targetList = isReel ? allReels : allPosts;
+      const item = targetList.find(x => x.id === itemId);
+      if (!item) return;
+
+      item.likes = Array.isArray(item.likes) ? item.likes : [];
+      const alreadyLiked = item.likes.includes(currentSession.uid);
+      if (alreadyLiked) {
+        item.likes = item.likes.filter(uid => uid !== currentSession.uid);
+      } else {
+        item.likes.push(currentSession.uid);
+      }
+
+      localState.posts = allPosts;
+      localState.reels = allReels;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          const colName = isReel ? 'reels' : 'posts';
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', colName, itemId), {
+            likes: alreadyLiked ? arrayRemove(currentSession.uid) : arrayUnion(currentSession.uid)
+          });
+        } catch (err) {
+          console.warn('Like sync error:', err);
+        }
+      }
+
+      if (!alreadyLiked && item.authorUid !== currentSession.uid) {
+        await createNotification({
+          toUid: item.authorUid,
+          type: 'like',
+          text: `${currentSession.displayName} (@${currentSession.handle}) reaccionó a tu ${isReel ? 'Reel' : 'foto'}.`
+        });
+      }
+
+      if (isReel) renderReels();
+      else renderFeedPosts();
+    };
+
+    window.toggleSavePost = async function (postId) {
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      currentSession.savedPosts = Array.isArray(currentSession.savedPosts) ? currentSession.savedPosts : [];
+      const exists = currentSession.savedPosts.includes(postId);
+      currentSession.savedPosts = exists
+        ? currentSession.savedPosts.filter(id => id !== postId)
+        : [...currentSession.savedPosts, postId];
+
+      const uIdx = allUsers.findIndex(u => u.uid === currentSession.uid);
+      if (uIdx >= 0) allUsers[uIdx].savedPosts = [...currentSession.savedPosts];
+      localState.users = allUsers;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentSession.uid), {
+            savedPosts: exists ? arrayRemove(postId) : arrayUnion(postId)
+          });
+        } catch (_) {}
+      }
+
+      renderFeedPosts();
+      if (activeTab === 'profile') renderProfile();
+      showToast(exists ? 'Eliminado de guardados.' : 'Guardado en tu perfil.', 'info');
+    };
+
+    window.deletePostItem = async function (postId) {
+      if (!currentSession) return;
+      allPosts = allPosts.filter(p => p.id !== postId);
+      localState.posts = allPosts;
+      saveLocalState();
+      if (firebaseReady && db) {
+        try {
+          await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'posts', postId));
+        } catch (_) {}
+      }
+      renderAll();
+      showToast('Publicación eliminada.', 'info');
+    };
+
+    // Comments Modal
+    window.openCommentsModal = function (itemId, kind) {
+      activeCommentTarget = { itemId, kind };
+      const modal = document.getElementById('comments-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderCommentsList();
+    };
+
+    window.closeCommentsModal = function () {
+      activeCommentTarget = null;
+      const modal = document.getElementById('comments-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    function renderCommentsList() {
+      const listEl = document.getElementById('comments-modal-list');
+      if (!activeCommentTarget) return;
+      const source = activeCommentTarget.kind === 'reel' ? allReels : allPosts;
+      const item = source.find(x => x.id === activeCommentTarget.itemId);
+      const comments = Array.isArray(item?.comments) ? item.comments : [];
+
+      if (!comments.length) {
+        listEl.innerHTML = `<div class="text-center text-xs text-gray-400 py-8">Aún no hay comentarios. ¡Escribe el primero!</div>`;
+        return;
+      }
+
+      listEl.innerHTML = comments.map(c => {
+        const u = getUserByUid(c.authorUid) || { displayName: 'Usuario', handle: 'usuario', photoURL: 'https://placehold.co/64x64/ec4899/ffffff?text=PX' };
+        return `
+          <div class="flex items-start gap-2.5">
+            <img src="${u.photoURL}" class="w-8 h-8 rounded-full object-cover shrink-0" alt="" />
+            <div class="bg-rose-50/60 dark:bg-zinc-900 rounded-2xl px-3.5 py-2 flex-1">
+              <div class="text-xs font-bold flex items-center gap-1">${escapeHtml(u.displayName)} ${renderBadge(u, 'w-3.5 h-3.5')}</div>
+              <p class="text-xs text-gray-700 dark:text-gray-200 mt-0.5">${escapeHtml(c.text)}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.submitComment = async function (event) {
+      event.preventDefault();
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      if (!activeCommentTarget) return;
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const isReel = activeCommentTarget.kind === 'reel';
+      const source = isReel ? allReels : allPosts;
+      const item = source.find(x => x.id === activeCommentTarget.itemId);
+      if (!item) return;
+
+      item.comments = Array.isArray(item.comments) ? item.comments : [];
+      const commentObj = {
+        id: `c_${Date.now()}`,
+        authorUid: currentSession.uid,
+        text,
+        createdAt: Date.now()
+      };
+      item.comments.push(commentObj);
+      input.value = '';
+
+      localState.posts = allPosts;
+      localState.reels = allReels;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', isReel ? 'reels' : 'posts', item.id), {
+            comments: arrayUnion(commentObj)
+          });
+        } catch (_) {}
+      }
+
+      if (item.authorUid !== currentSession.uid) {
+        await createNotification({
+          toUid: item.authorUid,
+          type: 'comment',
+          text: `${currentSession.displayName} comentó: "${text}"`
+        });
+      }
+
+      renderCommentsList();
+      if (isReel) renderReels();
+      else renderFeedPosts();
+    };
+
+    // Reels Rendering
+    function renderReels() {
+      const container = document.getElementById('reels-feed-container');
+      if (!allReels.length) {
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center p-8 text-center text-white">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-purple-600 via-pink-500 to-amber-400 flex items-center justify-center mb-3 shadow-lg">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+            </div>
+            <h3 class="font-bold text-base mb-1">Aún no hay Reels</h3>
+            <p class="text-xs text-zinc-400 mb-4">Activa cámara y micrófono para grabar el primer Reel en PulseX.</p>
+            <button type="button" onclick="openCreateModal('reel')" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 via-pink-500 to-rose-500 text-white text-xs font-bold shadow-md">
+              Grabar Reel
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = allReels.map(reel => {
+        const author = getUserByUid(reel.authorUid) || { displayName: 'Usuario', handle: 'usuario', photoURL: 'https://placehold.co/80x80/ec4899/ffffff?text=PX' };
+        const likesArr = Array.isArray(reel.likes) ? reel.likes : [];
+        const commentsArr = Array.isArray(reel.comments) ? reel.comments : [];
+        const isLiked = currentSession ? likesArr.includes(currentSession.uid) : false;
+
+        return `
+          <div class="reel-slide relative w-full h-full flex items-center justify-center bg-black" ondblclick="handleDoubleTapLike('${reel.id}', 'reel', this)">
+            <video src="${reel.videoUrl}" autoplay loop playsinline controls class="w-full h-full object-contain"></video>
+            <div class="double-tap-heart pointer-events-none absolute inset-0 flex items-center justify-center opacity-0">
+              <svg class="w-24 h-24 text-rose-500 drop-shadow-lg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" /></svg>
+            </div>
+
+            <div class="absolute bottom-4 left-4 right-20 text-white z-10 pointer-events-none">
+              <div class="flex items-center gap-2 mb-1.5">
+                <img src="${author.photoURL}" class="w-9 h-9 rounded-full object-cover ring-2 ring-pink-500" alt="" />
+                <span class="font-bold text-sm drop-shadow flex items-center gap-1">${escapeHtml(author.displayName)} ${renderBadge(author, 'w-4 h-4')}</span>
+              </div>
+              <p class="text-xs text-white/95 line-clamp-2 drop-shadow">${escapeHtml(reel.caption || '')}</p>
+            </div>
+
+            <div class="absolute bottom-5 right-3 flex flex-col items-center gap-4 z-10 text-white">
+              <button type="button" onclick="toggleLikeItem('${reel.id}', 'reel')" class="flex flex-col items-center gap-1">
+                <div class="w-11 h-11 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center ${isLiked ? 'text-rose-500' : 'text-white'}">
+                  <svg class="w-6 h-6" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" /></svg>
+                </div>
+                <span class="text-xs font-bold">${likesArr.length}</span>
+              </button>
+
+              <button type="button" onclick="openCommentsModal('${reel.id}', 'reel')" class="flex flex-col items-center gap-1">
+                <div class="w-11 h-11 rounded-full bg-black/55 backdrop-blur-sm flex items-center justify-center">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
+                </div>
+                <span class="text-xs font-bold">${commentsArr.length}</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Explore Rendering
+    function renderExplore() {
+      const q = (document.getElementById('explore-search-input')?.value || '').trim().toLowerCase();
+      const usersGrid = document.getElementById('explore-users-grid');
+      const mediaGrid = document.getElementById('explore-media-grid');
+
+      const matchingUsers = allUsers.filter(u =>
+        !q ||
+        (u.displayName || '').toLowerCase().includes(q) ||
+        (u.handle || '').toLowerCase().includes(q)
+      );
+
+      if (!matchingUsers.length) {
+        usersGrid.innerHTML = `<div class="col-span-full text-xs text-gray-500 py-4">No hay cuentas creadas todavía.</div>`;
+      } else {
+        usersGrid.innerHTML = matchingUsers.map(u => {
+          const isFollowing = currentSession && Array.isArray(currentSession.following) && currentSession.following.includes(u.uid);
+          const isMe = currentSession && currentSession.uid === u.uid;
+          return `
+            <div class="p-3.5 rounded-2xl bg-white/95 dark:bg-pulse-darkCard/95 border border-purple-100 dark:border-pulse-darkBorder flex items-center justify-between gap-2 shadow-sm">
+              <div class="flex items-center gap-3 min-w-0">
+                <img src="${u.photoURL}" class="w-11 h-11 rounded-full object-cover shrink-0 ring-2 ring-purple-400" alt="" />
+                <div class="min-w-0">
+                  <div class="text-xs font-bold truncate flex items-center gap-1">${escapeHtml(u.displayName)} ${renderBadge(u, 'w-3.5 h-3.5')}</div>
+                  <div class="text-[11px] text-gray-500 truncate">@${escapeHtml(u.handle)}</div>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0">
+                ${!isMe ? `
+                  <button type="button" onclick="toggleFollowUser('${u.uid}')" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold ${isFollowing ? 'bg-gray-200 dark:bg-zinc-800 text-gray-800 dark:text-gray-200' : 'bg-gradient-to-r from-sky-500 to-indigo-600 text-white'}">
+                    ${isFollowing ? 'Siguiendo' : 'Seguir'}
+                  </button>
+                  <button type="button" onclick="startDirectChat('${u.uid}')" class="p-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-200" title="Mensaje">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const combinedMedia = [
+        ...allPosts.map(p => ({ ...p, kind: 'post', url: p.mediaUrl })),
+        ...allReels.map(r => ({ ...r, kind: 'reel', url: r.videoUrl }))
+      ].filter(m => !q || (m.caption || '').toLowerCase().includes(q));
+
+      if (!combinedMedia.length) {
+        mediaGrid.innerHTML = `<div class="col-span-full text-xs text-gray-500 py-8 text-center">No hay fotos ni Reels para mostrar.</div>`;
+      } else {
+        mediaGrid.innerHTML = combinedMedia.map(item => `
+          <div onclick="switchTab('${item.kind === 'reel' ? 'reels' : 'home'}')" class="aspect-square rounded-2xl overflow-hidden bg-zinc-900 relative cursor-pointer group border border-pink-100 dark:border-zinc-800">
+            ${item.kind === 'reel'
+              ? `<video src="${item.url}" muted playsinline class="w-full h-full object-cover group-hover:scale-105 transition"></video>
+                 <span class="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-gradient-to-r from-purple-600 to-pink-600 text-white text-[10px] font-bold">REEL</span>`
+              : `<img src="${item.url}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition" />`
+            }
+          </div>
+        `).join('');
+      }
+    }
+
+    window.toggleFollowUser = async function (targetUid) {
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      if (targetUid === currentSession.uid) return;
+      const target = allUsers.find(u => u.uid === targetUid);
+      if (!target) return;
+
+      currentSession.following = Array.isArray(currentSession.following) ? currentSession.following : [];
+      target.followers = Array.isArray(target.followers) ? target.followers : [];
+
+      const isFollowing = currentSession.following.includes(targetUid);
+      if (isFollowing) {
+        currentSession.following = currentSession.following.filter(id => id !== targetUid);
+        target.followers = target.followers.filter(id => id !== currentSession.uid);
+      } else {
+        currentSession.following.push(targetUid);
+        target.followers.push(currentSession.uid);
+      }
+
+      const meIdx = allUsers.findIndex(u => u.uid === currentSession.uid);
+      if (meIdx >= 0) allUsers[meIdx].following = [...currentSession.following];
+      localState.users = allUsers;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentSession.uid), {
+            following: isFollowing ? arrayRemove(targetUid) : arrayUnion(targetUid)
+          });
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', targetUid), {
+            followers: isFollowing ? arrayRemove(currentSession.uid) : arrayUnion(currentSession.uid)
+          });
+        } catch (_) {}
+      }
+
+      if (!isFollowing) {
+        await createNotification({
+          toUid: targetUid,
+          type: 'follow',
+          text: `${currentSession.displayName} (@${currentSession.handle}) comenzó a seguirte.`
+        });
+      }
+
+      renderExplore();
+      renderProfile();
+    };
+
+    // Direct Messages
+    window.startDirectChat = function (partnerUid) {
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      activeDmPartnerUid = partnerUid;
+      switchTab('messages');
+    };
+
+    function renderMessages() {
+      const listEl = document.getElementById('dm-conversations-list');
+      const headerEl = document.getElementById('dm-thread-header');
+      const threadEl = document.getElementById('dm-messages-list');
+
+      if (!currentSession) {
+        listEl.innerHTML = `<div class="p-6 text-xs text-gray-500">Inicia sesión para ver tus mensajes.</div>`;
+        threadEl.innerHTML = '';
+        return;
+      }
+
+      const partners = allUsers.filter(u => u.uid !== currentSession.uid);
+      if (!activeDmPartnerUid && partners.length) {
+        activeDmPartnerUid = partners[0].uid;
+      }
+
+      if (!partners.length) {
+        listEl.innerHTML = `<div class="p-6 text-xs text-gray-500">Aún no hay otras cuentas en PulseX para chatear.</div>`;
+        headerEl.innerHTML = `<span class="text-sm text-gray-400">Sin conversaciones</span>`;
+        threadEl.innerHTML = '';
+        return;
+      }
+
+      listEl.innerHTML = partners.map(p => {
+        const isSelected = p.uid === activeDmPartnerUid;
+        return `
+          <button type="button" onclick="selectDmPartner('${p.uid}')" class="w-full p-3.5 flex items-center gap-3 text-left transition ${isSelected ? 'bg-gradient-to-r from-indigo-500/15 to-pink-500/15' : 'hover:bg-indigo-50/40 dark:hover:bg-zinc-800/60'}">
+            <img src="${p.photoURL}" class="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-indigo-400" alt="" />
+            <div class="min-w-0 flex-1">
+              <div class="text-xs font-bold truncate flex items-center gap-1">${escapeHtml(p.displayName)} ${renderBadge(p, 'w-3.5 h-3.5')}</div>
+              <div class="text-[11px] text-gray-500 truncate">@${escapeHtml(p.handle)}</div>
+            </div>
+          </button>
+        `;
+      }).join('');
+
+      const activePartner = getUserByUid(activeDmPartnerUid);
+      if (!activePartner) return;
+
+      headerEl.innerHTML = `
+        <img src="${activePartner.photoURL}" class="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-400" alt="" />
+        <div>
+          <div class="text-sm font-bold flex items-center gap-1">${escapeHtml(activePartner.displayName)} ${renderBadge(activePartner, 'w-4 h-4')}</div>
+          <div class="text-xs text-gray-500">@${escapeHtml(activePartner.handle)}</div>
+        </div>
+      `;
+
+      const convo = allMessages
+        .filter(m =>
+          (m.senderUid === currentSession.uid && m.receiverUid === activePartner.uid) ||
+          (m.senderUid === activePartner.uid && m.receiverUid === currentSession.uid)
+        )
+        .sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+
+      if (!convo.length) {
+        threadEl.innerHTML = `<div class="text-center text-xs text-gray-400 py-10">Inicia la conversación con ${escapeHtml(activePartner.displayName)}.</div>`;
+      } else {
+        threadEl.innerHTML = convo.map(m => {
+          const mine = m.senderUid === currentSession.uid;
+          return `
+            <div class="flex ${mine ? 'justify-end' : 'justify-start'}">
+              <div class="max-w-[75%] px-4 py-2.5 rounded-2xl text-xs shadow-sm ${mine ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white' : 'bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 border border-indigo-100 dark:border-zinc-700'}">
+                ${escapeHtml(m.text)}
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    window.selectDmPartner = function (uid) {
+      activeDmPartnerUid = uid;
+      renderMessages();
+    };
+
+    window.sendDirectMessage = async function (event) {
+      event.preventDefault();
+      if (!currentSession) {
+        showAuthModal();
+        return;
+      }
+      if (!activeDmPartnerUid) return;
+      const input = document.getElementById('dm-message-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const msgObj = {
+        id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        senderUid: currentSession.uid,
+        receiverUid: activeDmPartnerUid,
+        text,
+        createdAt: Date.now()
+      };
+
+      allMessages.push(msgObj);
+      localState.messages = allMessages;
+      saveLocalState();
+      input.value = '';
+
+      if (firebaseReady && db) {
+        try {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'messages', msgObj.id), msgObj);
+        } catch (_) {}
+      }
+
+      renderMessages();
+    };
+
+    // Notifications
+    async function createNotification({ toUid, type, text }) {
+      if (!toUid) return;
+      const notifObj = {
+        id: `notif_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        toUid,
+        type,
+        text,
+        read: false,
+        createdAt: Date.now()
+      };
+      allNotifications.unshift(notifObj);
+      localState.notifications = allNotifications;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'notifications', notifObj.id), notifObj);
+        } catch (_) {}
+      }
+      updateNotificationIndicators();
+    }
+
+    function updateNotificationIndicators() {
+      const unread = currentSession
+        ? allNotifications.filter(n => n.toUid === currentSession.uid && !n.read).length
+        : 0;
+      const dotDesktop = document.getElementById('notif-unread-dot');
+      const dotMob = document.getElementById('mob-notif-dot');
+      if (unread > 0) {
+        dotDesktop.classList.remove('hidden');
+        dotMob.classList.remove('hidden');
+      } else {
+        dotDesktop.classList.add('hidden');
+        dotMob.classList.add('hidden');
+      }
+    }
+
+    function renderNotifications() {
+      const listEl = document.getElementById('notifications-list');
+      if (!currentSession) {
+        listEl.innerHTML = `<div class="text-xs text-gray-500 py-6 text-center">Inicia sesión para ver notificaciones.</div>`;
+        return;
+      }
+      const mine = allNotifications.filter(n => n.toUid === currentSession.uid);
+      if (!mine.length) {
+        listEl.innerHTML = `<div class="text-xs text-gray-500 py-8 text-center">No tienes notificaciones aún.</div>`;
+        return;
+      }
+      listEl.innerHTML = mine.map(n => `
+        <div class="p-3.5 rounded-2xl ${n.read ? 'bg-gray-50/70 dark:bg-zinc-900/60' : 'bg-gradient-to-r from-amber-50 to-rose-50 dark:from-rose-500/10 dark:to-amber-500/10 border border-rose-200/60 dark:border-rose-500/20'} flex items-center justify-between gap-3">
+          <p class="text-xs font-medium">${escapeHtml(n.text)}</p>
+          <span class="text-[10px] text-gray-400 shrink-0">${n.read ? 'Leída' : 'Nueva'}</span>
+        </div>
+      `).join('');
+    }
+
+    window.markAllNotificationsRead = function () {
+      if (!currentSession) return;
+      allNotifications.forEach(n => {
+        if (n.toUid === currentSession.uid) n.read = true;
+      });
+      localState.notifications = allNotifications;
+      saveLocalState();
+      updateNotificationIndicators();
+      renderNotifications();
+    };
+
+    // Profile View
+    window.switchProfileMediaTab = function (subTab) {
+      activeProfileMediaTab = subTab;
+      ['posts', 'reels', 'saved'].forEach(t => {
+        const el = document.getElementById(`profile-tab-${t}`);
+        if (t === subTab) {
+          el.classList.add('border-rose-500', 'text-rose-600', 'dark:text-rose-400');
+          el.classList.remove('border-transparent', 'text-gray-500');
+        } else {
+          el.classList.remove('border-rose-500', 'text-rose-600', 'dark:text-rose-400');
+          el.classList.add('border-transparent', 'text-gray-500');
+        }
+      });
+      renderProfileMedia();
+    };
+
+    function renderProfile() {
+      const headerCard = document.getElementById('profile-header-card');
+      if (!currentSession) {
+        headerCard.innerHTML = `<div class="text-center py-6 text-sm text-gray-500">Inicia sesión para ver tu perfil.</div>`;
+        document.getElementById('profile-media-grid').innerHTML = '';
+        return;
+      }
+
+      const myPosts = allPosts.filter(p => p.authorUid === currentSession.uid);
+      const myReels = allReels.filter(r => r.authorUid === currentSession.uid);
+      const followersCount = Array.isArray(currentSession.followers) ? currentSession.followers.length : 0;
+      const followingCount = Array.isArray(currentSession.following) ? currentSession.following.length : 0;
+
+      headerCard.innerHTML = `
+        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+          <img src="${currentSession.photoURL}" alt="${escapeHtml(currentSession.displayName)}" class="w-24 h-24 rounded-full object-cover ring-4 ring-pink-400/60 shrink-0 shadow-md" />
+          <div class="flex-1 text-center sm:text-left min-w-0">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+              <div class="flex items-center justify-center sm:justify-start gap-1.5 flex-wrap">
+                <h1 class="text-xl font-extrabold">${escapeHtml(currentSession.displayName)}</h1>
+                ${renderBadge(currentSession, 'w-5 h-5')}
+              </div>
+              <div class="flex items-center justify-center sm:justify-start gap-2">
+                <button type="button" onclick="openEditProfileModal()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-95 text-white text-xs font-bold shadow-sm transition">
+                  Editar perfil
+                </button>
+                <button type="button" onclick="switchAccountFlow()" class="px-3.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-200 text-xs font-bold transition">
+                  Cambiar cuenta
+                </button>
+              </div>
+            </div>
+
+            <div class="text-xs text-gray-500 mb-3">@${escapeHtml(currentSession.handle)}</div>
+
+            <div class="flex items-center justify-center sm:justify-start gap-6 text-sm mb-3">
+              <span><strong>${myPosts.length + myReels.length}</strong> publicaciones</span>
+              <span><strong>${followersCount}</strong> seguidores</span>
+              <span><strong>${followingCount}</strong> siguiendo</span>
+            </div>
+
+            <p class="text-sm text-gray-700 dark:text-gray-300">${escapeHtml(currentSession.bio || '')}</p>
+          </div>
+        </div>
+      `;
+
+      renderProfileMedia();
+    }
+
+    function renderProfileMedia() {
+      const grid = document.getElementById('profile-media-grid');
+      if (!currentSession) return;
+
+      if (activeProfileMediaTab === 'posts') {
+        const mine = allPosts.filter(p => p.authorUid === currentSession.uid);
+        grid.innerHTML = mine.length
+          ? mine.map(p => `<div class="aspect-square rounded-2xl overflow-hidden bg-zinc-900"><img src="${p.mediaUrl}" class="w-full h-full object-cover" alt="" /></div>`).join('')
+          : `<div class="col-span-full text-center text-xs text-gray-500 py-8">No has publicado fotos aún.</div>`;
+      } else if (activeProfileMediaTab === 'reels') {
+        const mine = allReels.filter(r => r.authorUid === currentSession.uid);
+        grid.innerHTML = mine.length
+          ? mine.map(r => `<div class="aspect-square rounded-2xl overflow-hidden bg-zinc-900"><video src="${r.videoUrl}" muted playsinline class="w-full h-full object-cover"></video></div>`).join('')
+          : `<div class="col-span-full text-center text-xs text-gray-500 py-8">No has publicado Reels aún.</div>`;
+      } else {
+        const savedIds = currentSession.savedPosts || [];
+        const savedItems = allPosts.filter(p => savedIds.includes(p.id));
+        grid.innerHTML = savedItems.length
+          ? savedItems.map(p => `<div class="aspect-square rounded-2xl overflow-hidden bg-zinc-900"><img src="${p.mediaUrl}" class="w-full h-full object-cover" alt="" /></div>`).join('')
+          : `<div class="col-span-full text-center text-xs text-gray-500 py-8">No tienes elementos guardados.</div>`;
+      }
+    }
+
+    window.openEditProfileModal = function () {
+      if (!currentSession) return;
+      document.getElementById('edit-profile-name').value = currentSession.displayName || '';
+      document.getElementById('edit-profile-handle').value = currentSession.handle || '';
+      document.getElementById('edit-profile-bio').value = currentSession.bio || '';
+      const modal = document.getElementById('edit-profile-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    window.closeEditProfileModal = function () {
+      const modal = document.getElementById('edit-profile-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    window.saveProfileChanges = async function (event) {
+      event.preventDefault();
+      if (!currentSession) return;
+
+      const name = document.getElementById('edit-profile-name').value.trim();
+      const handle = document.getElementById('edit-profile-handle').value.trim().toLowerCase().replace(/[^a-z0-9._]/g, '') || currentSession.handle;
+      const bio = document.getElementById('edit-profile-bio').value.trim();
+
+      currentSession.displayName = name || currentSession.displayName;
+      currentSession.handle = handle;
+      currentSession.bio = bio;
+
+      const idx = allUsers.findIndex(u => u.uid === currentSession.uid);
+      if (idx >= 0) {
+        allUsers[idx] = { ...allUsers[idx], displayName: currentSession.displayName, handle: currentSession.handle, bio: currentSession.bio };
+      }
+      localState.users = allUsers;
+      saveLocalState();
+
+      if (firebaseReady && db) {
+        try {
+          await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'users', currentSession.uid), {
+            displayName: currentSession.displayName,
+            handle: currentSession.handle,
+            bio: currentSession.bio
+          });
+        } catch (_) {}
+      }
+
+      closeEditProfileModal();
+      renderAll();
+      showToast('Perfil actualizado.', 'success');
+    };
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Firestore Realtime Listeners or Local State Bootstrap
+    function startDataListeners() {
+      if (!firebaseReady || !db) {
+        allUsers = [...localState.users];
+        allPosts = [...localState.posts];
+        allReels = [...localState.reels];
+        allStories = [...localState.stories];
+        allMessages = [...localState.messages];
+        allNotifications = [...localState.notifications];
+
+        if (localState.sessionUid) {
+          const found = allUsers.find(u => u.uid === localState.sessionUid);
+          if (found) {
+            currentSession = { ...found, isCreator: isOwnerEmail(found.email) };
+            hideAuthModal();
+          } else {
+            showAuthModal();
+          }
+        } else {
+          showAuthModal();
+        }
+        renderAll();
+        return;
+      }
+
+      const basePath = ['artifacts', appId, 'public', 'data'];
+
+      onSnapshot(collection(db, ...basePath, 'users'), (snap) => {
+        allUsers = snap.docs.map(d => {
+          const data = d.data();
+          const creator = isOwnerEmail(data.email);
+          return {
+            uid: d.id,
+            ...data,
+            isCreator: creator,
+            verified: creator ? true : Boolean(data.verified)
+          };
+        });
+        if (currentSession) {
+          const updatedMe = allUsers.find(u => u.uid === currentSession.uid);
+          if (updatedMe) currentSession = { ...updatedMe };
+        }
+        renderAll();
+      });
+
+      onSnapshot(collection(db, ...basePath, 'posts'), (snap) => {
+        allPosts = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        renderFeedPosts();
+        renderExplore();
+        if (activeTab === 'profile') renderProfileMedia();
+      });
+
+      onSnapshot(collection(db, ...basePath, 'reels'), (snap) => {
+        allReels = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        renderReels();
+        renderExplore();
+        if (activeTab === 'profile') renderProfileMedia();
+      });
+
+      onSnapshot(collection(db, ...basePath, 'stories'), (snap) => {
+        allStories = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        renderStoriesStrip();
+      });
+
+      onSnapshot(collection(db, ...basePath, 'messages'), (snap) => {
+        allMessages = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (activeTab === 'messages') renderMessages();
+      });
+
+      onSnapshot(collection(db, ...basePath, 'notifications'), (snap) => {
+        allNotifications = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        updateNotificationIndicators();
+        if (activeTab === 'notifications') renderNotifications();
+      });
+
+      onAuthStateChanged(auth, (fbUser) => {
+        if (fbUser && !currentSession) {
+          const matched = allUsers.find(u => u.uid === fbUser.uid);
+          if (matched) {
+            currentSession = { ...matched };
+            hideAuthModal();
+            renderAll();
+          }
+        }
+      });
+    }
+
+    // Boot PulseX
+    startDataListeners();
+    switchTab('home');
+  </script>
+</body>
+</html>
